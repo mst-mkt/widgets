@@ -1,5 +1,13 @@
 {
   "name": "widgets",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "gen:css": "touch style.css && unocss '**/*.tsx' -o style.css"
+  },
+  "devDependencies": {
+    "@itt/unocss-preset-gtk": "jsr:^0.0.1",
+    "@unocss/cli": "^66.7.0",
+    "unocss": "^66.7.0"
+  }
 }

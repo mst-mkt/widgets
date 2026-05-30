@@ -35,11 +35,20 @@
       ];
     in
     {
-      packages.${system}.default = pkgs.stdenv.mkDerivation {
+      packages.${system}.default = pkgs.stdenv.mkDerivation (finalAttrs: {
         inherit pname version;
         src = ./.;
 
+        pnpmDeps = pkgs.fetchPnpmDeps {
+          inherit (finalAttrs) pname version src;
+          fetcherVersion = 3;
+          hash = "sha256-9iSn+6Hu6xCnzdb2x2jNhWC8XmSkfwGkG8T/ENLW374=";
+        };
+
         nativeBuildInputs = with pkgs; [
+          nodejs
+          pnpm
+          pnpmConfigHook
           wrapGAppsHook3
           gobject-introspection
           ags.packages.${system}.default
@@ -47,17 +56,19 @@
 
         buildInputs = extraPackages ++ [ pkgs.gjs ];
 
+        buildPhase = ''
+          runHook preBuild
+          pnpm run gen:css
+          runHook postBuild
+        '';
+
         installPhase = ''
           runHook preInstall
-
           mkdir -p $out/bin
-          mkdir -p $out/share
-          cp -r * $out/share
-          ags bundle ${entry} $out/bin/${pname} -d "SRC='$out/share'"
-
+          ags bundle ${entry} $out/bin/${pname}
           runHook postInstall
         '';
-      };
+      });
 
       devShells.${system}.default = pkgs.mkShell {
         buildInputs = [
