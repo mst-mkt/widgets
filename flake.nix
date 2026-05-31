@@ -82,6 +82,7 @@
           (ags.packages.${system}.default.override { inherit extraPackages; })
           pkgs.nodejs
           pkgs.pnpm
+          pkgs.watchexec
           pkgs.lucide
         ];
         shellHook = ''
