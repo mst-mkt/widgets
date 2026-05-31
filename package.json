@@ -9,6 +9,9 @@
     "watch:css": "unocss '**/*.tsx' -o style.css --watch",
     "gen:css": "unocss '**/*.tsx' -o style.css"
   },
+  "dependencies": {
+    "unocss-merge": "^0.9.1"
+  },
   "devDependencies": {
     "@itt/unocss-preset-gtk": "jsr:^0.0.1",
     "@unocss/cli": "^66.7.0",
