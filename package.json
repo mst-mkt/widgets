@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "gen:css": "touch style.css && unocss '**/*.tsx' -o style.css"
+    "prepare": "vp config"
   },
   "devDependencies": {
     "@itt/unocss-preset-gtk": "jsr:^0.0.1",
     "@unocss/cli": "^66.7.0",
-    "unocss": "^66.7.0"
-  }
+    "unocss": "^66.7.0",
+    "vite-plus": "^0.1.23"
+  },
+  "packageManager": "pnpm@11.5.0"
 }
