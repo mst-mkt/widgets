@@ -71,6 +71,10 @@
           ags bundle ${entry} $out/bin/${pname}
           runHook postInstall
         '';
+
+        preFixup = ''
+          gappsWrapperArgs+=(--prefix XDG_DATA_DIRS : "${pkgs.lucide}/share")
+        '';
       });
 
       devShells.${system}.default = pkgs.mkShell {
@@ -78,7 +82,11 @@
           (ags.packages.${system}.default.override { inherit extraPackages; })
           pkgs.nodejs
           pkgs.pnpm
+          pkgs.lucide
         ];
+        shellHook = ''
+          export XDG_DATA_DIRS="${pkgs.lucide}/share''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+        '';
       };
     };
 }
