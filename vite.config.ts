@@ -14,6 +14,10 @@ export default defineConfig({
     sortPackageJson: {
       sortScripts: false,
     },
+    sortTailwindcss: {
+      attributes: ['class'],
+      functions: ['unoMerge'],
+    },
   },
   lint: {
     options: {
