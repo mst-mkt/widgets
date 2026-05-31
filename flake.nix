@@ -26,6 +26,9 @@
       astalPackages = with ags.packages.${system}; [
         io
         astal4
+        mpris
+        tray
+        wireplumber
       ];
 
       extraPackages = astalPackages ++ [
