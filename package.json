@@ -3,7 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "dev": "pnpm run '/^watch:.*/'",
+    "watch:ags": "watchexec -r -e ts,tsx,css -- ags run app.ts",
+    "watch:css": "unocss '**/*.tsx' -o style.css --watch",
+    "gen:css": "unocss '**/*.tsx' -o style.css"
   },
   "devDependencies": {
     "@itt/unocss-preset-gtk": "jsr:^0.0.1",
