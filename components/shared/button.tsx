@@ -1,6 +1,6 @@
 import { Gtk } from 'ags/gtk4'
-import { unoMerge } from 'unocss-merge'
 
+import { mergeClass } from '../../utils/class'
 import type { FC } from '../../utils/types'
 
 const resetClassName = 'bg-transparent border-none shadow-none p-0 m-0'
@@ -15,10 +15,5 @@ export const Button: FC<ButtonProps> = ({ class: className, $, ...rest }) => {
     $?.(self)
   }
 
-  const mergedClassName =
-    className === undefined || typeof className === 'string'
-      ? unoMerge(resetClassName, className)
-      : className.as((c: string) => unoMerge(resetClassName, c))
-
-  return <button class={mergedClassName} $={setup} {...rest} />
+  return <button class={mergeClass(resetClassName, className)} $={setup} {...rest} />
 }

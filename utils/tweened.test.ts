@@ -28,7 +28,7 @@ describe('tweened', () => {
 
     const value = tweened(source, { duration: 1000, easing: (t) => t })
 
-    expect(value.get()).toBe(0)
+    expect(value.peek()).toBe(0)
     expect(timers).toHaveLength(0)
   })
 
@@ -43,12 +43,12 @@ describe('tweened', () => {
     atMs(250)
     runTimer()
 
-    expect(value.get()).toBeCloseTo(0.25)
+    expect(value.peek()).toBeCloseTo(0.25)
 
     atMs(1000)
 
     expect(runTimer()).toBe(false)
-    expect(value.get()).toBe(1)
+    expect(value.peek()).toBe(1)
   })
 
   it('ignores re-emits of the same value', () => {
@@ -68,7 +68,7 @@ describe('tweened', () => {
     atMs(500)
     runTimer()
 
-    expect(value.get()).toBeCloseTo(0.5)
+    expect(value.peek()).toBeCloseTo(0.5)
 
     setSource(0)
 
@@ -77,6 +77,6 @@ describe('tweened', () => {
     atMs(1000)
     runTimer()
 
-    expect(value.get()).toBeCloseTo(0.25)
+    expect(value.peek()).toBeCloseTo(0.25)
   })
 })

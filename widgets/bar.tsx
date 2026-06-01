@@ -1,6 +1,7 @@
 import { Astal, Gdk } from 'ags/gtk4'
 import app from 'ags/gtk4/app'
 
+import { NotificationButton } from '../components/bar/notification-button'
 import { Workspaces } from '../components/bar/workspaces'
 
 export const Bar = (gdkmonitor?: Gdk.Monitor) => {
@@ -18,8 +19,9 @@ export const Bar = (gdkmonitor?: Gdk.Monitor) => {
       layer={Astal.Layer.BOTTOM}
       application={app}
     >
-      <centerbox class="mb-3">
+      <centerbox class="mx-3 mb-3">
         <Workspaces $type="center" />
+        <NotificationButton $type="end" />
       </centerbox>
     </window>
   )

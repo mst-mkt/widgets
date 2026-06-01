@@ -5,7 +5,7 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   test: {
-    include: ['{utils,services,components,widgets}/**/*.test.{ts,tsx}'],
+    include: ['{utils,services,stores,components,widgets}/**/*.test.{ts,tsx}'],
   },
   fmt: {
     semi: false,

@@ -15,9 +15,9 @@ export const tweened = (
   source: Accessor<number>,
   { duration = 300, easing = easeOutCubic }: TweenOptions = {},
 ): Accessor<number> => {
-  const [value, setValue] = createState(source.get())
+  const [value, setValue] = createState(source.peek())
 
-  let from = value.get()
+  let from = value.peek()
   let to = from
   let startedAt = 0
   let isRunning = false
@@ -30,10 +30,10 @@ export const tweened = (
   }
 
   source.subscribe(() => {
-    const next = source.get()
+    const next = source.peek()
     if (next === to) return
 
-    from = value.get()
+    from = value.peek()
     to = next
     startedAt = nowMs()
 

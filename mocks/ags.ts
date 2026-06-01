@@ -2,7 +2,7 @@ type Listener = () => void
 
 const accessorFrom = <T>(get: () => T, subscribe: (cb: Listener) => () => void) => {
   const as = <R>(fn: (v: T) => R) => accessorFrom(() => fn(get()), subscribe)
-  return Object.assign(get, { get, subscribe, as })
+  return Object.assign(get, { get, peek: get, subscribe, as })
 }
 
 export const createState = <T>(initial: T) => {
@@ -14,8 +14,8 @@ export const createState = <T>(initial: T) => {
     return () => listeners.delete(cb)
   }
 
-  const set = (next: T) => {
-    value = next
+  const set = (next: T | ((prev: T) => T)) => {
+    value = typeof next === 'function' ? (next as (prev: T) => T)(value) : next
     for (const cb of listeners) {
       cb()
     }
