@@ -27,6 +27,7 @@
         io
         astal4
         mpris
+        notifd
         tray
         wireplumber
       ];
