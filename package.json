@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "prepare": "vp config",
+    "postinstall": "ags types -d . -u",
     "dev": "pnpm run '/^watch:.*/'",
     "watch:ags": "watchexec -r -w ./src -- ags run ./src/app.ts",
     "watch:css": "unocss './src/**/*.tsx' -o ./src/style.css --watch",
