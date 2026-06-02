@@ -5,11 +5,6 @@ export type DesktopApp = {
   icon: string
 }
 
-export type AppIdentity = {
-  name: string
-  icon: string
-}
-
 type AppSource = {
   appName: string
   appIcon: string
@@ -22,7 +17,7 @@ export const resolveApp = (appSource: AppSource) => {
   return {
     name: app?.name || appSource.appName,
     icon: appSource.appIcon || app?.icon || '',
-  } satisfies AppIdentity
+  } satisfies DesktopApp
 }
 
 export const desktopId = (entry: string) => {
