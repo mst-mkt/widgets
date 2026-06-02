@@ -20,9 +20,6 @@ export const NotificationGroup: FC<NotificationGroupProps> = ({ groupKey: key })
   const items = notifications.as((list) =>
     list.filter((notification) => groupKey(notification) === key),
   )
-  const byId = items.as(
-    (list) => new Map(list.map((notification) => [notification.id, notification])),
-  )
 
   return (
     <box orientation={Gtk.Orientation.VERTICAL} spacing={8}>
@@ -40,7 +37,9 @@ export const NotificationGroup: FC<NotificationGroupProps> = ({ groupKey: key })
         <For each={items} id={(notification: Notification) => notification.id}>
           {(notification: Notification) => (
             <NotificationItem
-              current={byId.as((map) => map.get(notification.id) ?? notification)}
+              current={items.as(
+                (list) => list.find((n) => n.id === notification.id) ?? notification,
+              )}
             />
           )}
         </For>
