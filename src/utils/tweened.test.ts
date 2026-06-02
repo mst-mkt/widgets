@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { clock, resetGLib, timers } from '../mocks/gi-glib'
+import { clock, resetGLib, timers } from '../../test/mocks/gi-glib'
 
-vi.mock('gi://GLib', () => import('../mocks/gi-glib'))
-vi.mock('ags', () => import('../mocks/ags'))
+vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
+vi.mock('ags', () => import('../../test/mocks/ags'))
 
 const { createState } = await import('ags')
 const { tweened } = await import('./tweened')

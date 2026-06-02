@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { focusedIdx, markFocused, parseEvent, sortWorkspaces, type Workspace } from './workspaces'
 
-vi.mock('ags', () => import('../mocks/ags'))
+vi.mock('ags', () => import('../../test/mocks/ags'))
 
-vi.mock('ags/process', () => import('../mocks/ags-process'))
+vi.mock('ags/process', () => import('../../test/mocks/ags-process'))
 
 const createWorkspace = (id: number, idx: number, is_focused = false): Workspace => ({
   id,

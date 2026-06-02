@@ -20,7 +20,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       pname = "widgets";
-      entry = "app.ts";
+      entry = "src/app.ts";
       version = self.shortRev or self.dirtyShortRev or "dev";
 
       astalPackages = with ags.packages.${system}; [

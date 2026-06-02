@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { emit, invocations, reset, setMockNotifications } from '../mocks/gi-notifd'
+import { emit, invocations, reset, setMockNotifications } from '../../test/mocks/gi-notifd'
 import {
   activate,
   groupByApp,
@@ -16,9 +16,9 @@ import {
   type Notification,
 } from './notifications'
 
-vi.mock('ags', () => import('../mocks/ags'))
+vi.mock('ags', () => import('../../test/mocks/ags'))
 
-vi.mock('gi://AstalNotifd', () => import('../mocks/gi-notifd'))
+vi.mock('gi://AstalNotifd', () => import('../../test/mocks/gi-notifd'))
 
 const createNotification = (overrides: Partial<Notification> = {}): Notification => ({
   id: 1,

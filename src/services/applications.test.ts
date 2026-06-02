@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { reset, setMockApps } from '../mocks/gi-gio'
+import { reset, setMockApps } from '../../test/mocks/gi-gio'
 import { desktopApp, desktopId, resolveApp } from './applications'
 
-vi.mock('gi://Gio', () => import('../mocks/gi-gio'))
+vi.mock('gi://Gio', () => import('../../test/mocks/gi-gio'))
 
 type MockApp = {
   get_id: () => string

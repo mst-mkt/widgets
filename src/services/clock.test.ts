@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { resetGLib, timers } from '../mocks/gi-glib'
+import { resetGLib, timers } from '../../test/mocks/gi-glib'
 import { formatDate, initClock, secondsUntilMidnight, setToday, today, weekdayLabel } from './clock'
 
-vi.mock('ags', () => import('../mocks/ags'))
+vi.mock('ags', () => import('../../test/mocks/ags'))
 
-vi.mock('gi://GLib', () => import('../mocks/gi-glib'))
+vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
 
 describe('weekdayLabel', () => {
   it('maps ISO weekdays 1-7 to Japanese labels', () => {

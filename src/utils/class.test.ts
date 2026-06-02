@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { mergeClass } from './class'
 
-vi.mock('ags', () => import('../mocks/ags'))
+vi.mock('ags', () => import('../../test/mocks/ags'))
 
 const { createState } = await import('ags')
 

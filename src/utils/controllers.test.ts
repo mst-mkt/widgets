@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
 
-import { createWidget, Gdk } from '../mocks/ags-gtk4'
+import { createWidget, Gdk } from '../../test/mocks/ags-gtk4'
 import { autofocus, compose, onEscape, onPressed, onReleased, pointer } from './controllers'
 
-vi.mock('ags/gtk4', () => import('../mocks/ags-gtk4'))
+vi.mock('ags/gtk4', () => import('../../test/mocks/ags-gtk4'))
 
 describe('compose', () => {
   it('runs every setup with the widget, in order', () => {
