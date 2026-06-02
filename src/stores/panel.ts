@@ -4,6 +4,9 @@ import { focused } from '../services/workspaces'
 
 export type PanelId = 'notification'
 
+const panelIds = ['notification'] as const satisfies PanelId[]
+export const isPanelId = (value: string): value is PanelId => panelIds.includes(value as PanelId)
+
 const [activePanel, setActivePanel] = createState<PanelId | null>(null)
 
 export const isPanelOpen = (id: PanelId) => activePanel.as((active) => active === id)

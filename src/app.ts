@@ -1,5 +1,6 @@
 import app from 'ags/gtk4/app'
 
+import { handleRequest } from './handler'
 import { initClock } from './services/clock'
 import { initNotifications } from './services/notifications'
 import { initWorkspaces } from './services/workspaces'
@@ -14,6 +15,7 @@ const widgets = [Bar, NotificationPanelWidget]
 
 app.start({
   css: style,
+  requestHandler: (argv, res) => res(handleRequest(argv)),
   main: () => {
     for (const start of init) start()
 
