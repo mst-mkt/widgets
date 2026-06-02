@@ -41,6 +41,7 @@ export type MockWidget = GtkTypes.Widget & {
   set_focusable: ReturnType<typeof vi.fn>
   child_focus: ReturnType<typeof vi.fn>
   grab_focus: ReturnType<typeof vi.fn>
+  set_cursor_from_name: ReturnType<typeof vi.fn>
 }
 
 export const createWidget = (childFocusable = false): MockWidget => {
@@ -57,7 +58,8 @@ export const createWidget = (childFocusable = false): MockWidget => {
     set_focusable: vi.fn(),
     child_focus: vi.fn(() => childFocusable),
     grab_focus: vi.fn(),
-  }
+    set_cursor_from_name: vi.fn(),
+  } as unknown as MockWidget
 
-  return widget as unknown as MockWidget
+  return widget
 }

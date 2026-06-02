@@ -1,9 +1,33 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { createWidget, Gdk } from '../mocks/ags-gtk4'
-import { autofocus, onEscape, onPressed } from './controllers'
+import { autofocus, compose, onEscape, onPressed, onReleased, pointer } from './controllers'
 
 vi.mock('ags/gtk4', () => import('../mocks/ags-gtk4'))
+
+describe('compose', () => {
+  it('runs every setup with the widget, in order', () => {
+    const order: string[] = []
+    const widget = createWidget()
+
+    compose(
+      () => order.push('a'),
+      () => order.push('b'),
+    )(widget)
+
+    expect(order).toEqual(['a', 'b'])
+  })
+})
+
+describe('pointer', () => {
+  it('sets the pointer cursor', () => {
+    const widget = createWidget()
+
+    pointer(widget)
+
+    expect(widget.set_cursor_from_name).toHaveBeenCalledWith('pointer')
+  })
+})
 
 describe('onPressed', () => {
   it('runs the handler when the gesture is pressed', () => {
@@ -12,6 +36,18 @@ describe('onPressed', () => {
     onPressed(handler)(widget)
 
     widget.controllers[0]?.emit('pressed')
+
+    expect(handler).toHaveBeenCalledOnce()
+  })
+})
+
+describe('onReleased', () => {
+  it('runs the handler when the gesture is released', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    onReleased(handler)(widget)
+
+    widget.controllers[0]?.emit('released')
 
     expect(handler).toHaveBeenCalledOnce()
   })

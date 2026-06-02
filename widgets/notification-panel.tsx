@@ -1,8 +1,13 @@
+import { With } from 'ags'
 import { Astal, Gdk, Gtk } from 'ags/gtk4'
 import app from 'ags/gtk4/app'
 
+import { NotificationEmpty } from '../components/notification-panel/empty'
+import { NotificationHeader } from '../components/notification-panel/header'
+import { NotificationList } from '../components/notification-panel/list'
 import { Panel } from '../components/shared/panel'
 import { PanelOverlay, panelProgress } from '../components/shared/panel-overlay'
+import { hasNotifications } from '../services/notifications'
 import { closePanel, isPanelOpen } from '../stores/panel'
 
 export const NotificationPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
@@ -29,7 +34,12 @@ export const NotificationPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
         align={Gtk.Align.END}
         hiddenOffset={[64, 0]}
       >
-        <Panel />
+        <Panel spacing={8}>
+          <NotificationHeader />
+          <With value={hasNotifications}>
+            {(has: boolean) => (has ? <NotificationList /> : <NotificationEmpty />)}
+          </With>
+        </Panel>
       </PanelOverlay>
     </window>
   )
