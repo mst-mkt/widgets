@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 
-import { easeOutCubic, lerp } from './math'
+import { clamp, easeOutCubic, lerp } from './math'
 
 describe('lerp', () => {
   it('returns the endpoints at t=0 and t=1', () => {
@@ -11,6 +11,19 @@ describe('lerp', () => {
   it('interpolates linearly', () => {
     expect(lerp(0, 10, 0.5)).toBe(5)
     expect(lerp(8, 24, 0.5)).toBe(16)
+  })
+})
+
+describe('clamp', () => {
+  it('passes values that are already in range', () => {
+    expect(clamp(0.5, 0, 1)).toBe(0.5)
+    expect(clamp(0, 0, 1)).toBe(0)
+    expect(clamp(1, 0, 1)).toBe(1)
+  })
+
+  it('clamps to the bounds when out of range', () => {
+    expect(clamp(-2, 0, 1)).toBe(0)
+    expect(clamp(5, 0, 1)).toBe(1)
   })
 })
 

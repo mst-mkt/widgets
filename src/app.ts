@@ -1,17 +1,20 @@
 import app from 'ags/gtk4/app'
 
 import { handleRequest } from './handler'
+import { initBrightness } from './services/brightness'
 import { initClock } from './services/clock'
 import { initNotifications } from './services/notifications'
 import { initWorkspaces } from './services/workspaces'
+import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
 import { Bar } from './widgets/bar'
 import { NotificationPanelWidget } from './widgets/notification-panel'
+import { Osd } from './widgets/osd'
 
 import style from './style.css'
 
-const init = [initWorkspaces, initNotifications, initClock, initPanel]
-const widgets = [Bar, NotificationPanelWidget]
+const init = [initWorkspaces, initNotifications, initClock, initBrightness, initPanel, initOsd]
+const widgets = [Bar, NotificationPanelWidget, Osd]
 
 app.start({
   css: style,

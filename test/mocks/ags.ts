@@ -23,3 +23,10 @@ export const createState = <T>(initial: T) => {
 
   return [accessorFrom(() => value, subscribe), set]
 }
+
+export const createBinding = <T, K extends keyof T>(object: T, property: K) => {
+  return accessorFrom(
+    () => object[property],
+    () => () => {},
+  )
+}

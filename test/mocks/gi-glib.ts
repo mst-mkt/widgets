@@ -1,9 +1,11 @@
 export const clock = { us: 0 }
 export const timers: (() => boolean)[] = []
+export const removed: number[] = []
 
 export const resetGLib = () => {
   clock.us = 0
   timers.length = 0
+  removed.length = 0
 }
 
 const dateTime = {
@@ -27,6 +29,10 @@ export default {
   timeout_add_seconds: (_priority: number, _interval: number, fn: () => boolean) => {
     timers.push(fn)
     return timers.length
+  },
+  source_remove: (id: number) => {
+    removed.push(id)
+    return true
   },
   DateTime: {
     new_now_local: () => dateTime,

@@ -2,7 +2,7 @@ import { presetGtk } from '@itt/unocss-preset-gtk'
 import { defineConfig } from 'unocss'
 
 const colors = {
-  surface: 'rgba(20, 20, 24, 0.92)',
+  surface: 'rgba(20, 20, 24, 0.8)',
   card: 'rgba(255, 255, 255, 0.05)',
   elevated: 'rgba(255, 255, 255, 0.08)',
   gold: 'rgba(248, 199, 6, 1)',

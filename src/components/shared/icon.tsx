@@ -4,7 +4,15 @@ import { Gtk } from 'ags/gtk4'
 import { mergeClass } from '../../utils/class'
 import type { FC } from '../../utils/types'
 
-export type IconName = 'bell' | 'bell-off' | 'trash-2' | 'x'
+export type IconName =
+  | 'bell'
+  | 'bell-off'
+  | 'trash-2'
+  | 'x'
+  | 'volume-1'
+  | 'volume-2'
+  | 'volume-x'
+  | 'sun'
 
 const sizeStyle = (size: number) => {
   return `font-size: ${size}px;`
