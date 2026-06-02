@@ -4,7 +4,7 @@ import app from 'ags/gtk4/app'
 import { NotificationButton } from '../components/bar/notification-button'
 import { Workspaces } from '../components/bar/workspaces'
 
-export const Bar = (gdkmonitor?: Gdk.Monitor) => {
+export const BarWidget = (gdkmonitor?: Gdk.Monitor) => {
   const { BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
 
   return (

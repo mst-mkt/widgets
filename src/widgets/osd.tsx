@@ -6,7 +6,7 @@ import { content, visible } from '../stores/osd'
 import { slide } from '../utils/transition'
 import { tweened } from '../utils/tweened'
 
-export const Osd = (gdkmonitor?: Gdk.Monitor) => {
+export const OsdWidget = (gdkmonitor?: Gdk.Monitor) => {
   const { BOTTOM } = Astal.WindowAnchor
 
   const progress = tweened(
