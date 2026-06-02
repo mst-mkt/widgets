@@ -29,7 +29,7 @@ export const NotificationPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
       anchor={TOP | BOTTOM | LEFT | RIGHT}
       exclusivity={Astal.Exclusivity.NORMAL}
       layer={Astal.Layer.OVERLAY}
-      keymode={Astal.Keymode.ON_DEMAND}
+      keymode={Astal.Keymode.NONE}
       application={app}
     >
       <PanelOverlay
