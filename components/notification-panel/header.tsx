@@ -9,13 +9,8 @@ import { Icon } from '../shared/icon'
 export const NotificationHeader: FC = () => (
   <centerbox class="px-8 py-6">
     <box $type="start" orientation={Gtk.Orientation.VERTICAL} valign={Gtk.Align.CENTER} spacing={4}>
-      <label
-        class="text-ink text-[16px]"
-        css="font-weight: 700;"
-        xalign={0}
-        label="Notifications"
-      />
-      <label class="text-faint text-[12px]" xalign={0} label={today} />
+      <label class="text-ink text-16 font-bold" xalign={0} label="Notifications" />
+      <label class="text-faint text-12" xalign={0} label={today} />
     </box>
     <Button
       $type="end"
@@ -25,7 +20,7 @@ export const NotificationHeader: FC = () => (
       visible={hasNotifications}
       onClicked={dismissAll}
     >
-      <Icon icon="trash-2" size={16} class="text-mute" css="font-weight: 300;" />
+      <Icon icon="trash-2" size={16} class="text-mute font-light" />
     </Button>
   </centerbox>
 )

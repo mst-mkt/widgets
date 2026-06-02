@@ -19,6 +19,14 @@ export default defineConfig({
   rules: [
     [/^shadow-none$/, () => ({ 'box-shadow': 'none' })],
     [/^font-icon$/, () => ({ 'font-family': '"lucide"' })],
+    [
+      /^font-(light|normal|medium|semibold|bold)$/,
+      ([, weight = 'normal']) => ({
+        'font-weight':
+          { light: 300, normal: 400, medium: 500, semibold: 600, bold: 700 }[weight] ?? 400,
+      }),
+    ],
+    [/^text-(\d+)$/, ([, size = '0']) => ({ 'font-size': `${size}px` })],
     [/^transition$/, () => ({ transition: 'background-color 150ms ease' })],
   ],
   preflights: [

@@ -52,8 +52,7 @@ export const NotificationItem: FC<NotificationItemProps> = ({ current }) => {
               visible={current.as((notification) => notification.urgency === 2)}
             />
             <label
-              class="text-ink text-[14px]"
-              css="font-weight: 500;"
+              class="text-ink text-14 font-medium"
               xalign={0}
               hexpand
               wrap
@@ -62,7 +61,7 @@ export const NotificationItem: FC<NotificationItemProps> = ({ current }) => {
             />
           </box>
           <label
-            class="text-dim text-[12px]"
+            class="text-dim text-12"
             xalign={0}
             wrap
             maxWidthChars={1}

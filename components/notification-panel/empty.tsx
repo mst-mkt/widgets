@@ -13,6 +13,6 @@ export const NotificationEmpty: FC = () => (
     spacing={16}
   >
     <Icon icon="bell-off" size={24} class="text-ghost" />
-    <label class="text-ghost text-[12px]" label="No Notifications" />
+    <label class="text-ghost text-12" label="No Notifications" />
   </box>
 )

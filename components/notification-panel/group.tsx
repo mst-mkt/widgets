@@ -27,11 +27,7 @@ export const NotificationGroup: FC<NotificationGroupProps> = ({ groupKey: key })
         <With value={identity.as((value) => value.icon)}>
           {(icon: string) => <AppIcon icon={icon} size={24} />}
         </With>
-        <label
-          class="text-mute text-[14px]"
-          xalign={0}
-          label={identity.as((value) => value.name)}
-        />
+        <label class="text-mute text-14" xalign={0} label={identity.as((value) => value.name)} />
       </box>
       <box orientation={Gtk.Orientation.VERTICAL}>
         <For each={items} id={(notification: Notification) => notification.id}>

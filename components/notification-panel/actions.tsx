@@ -18,7 +18,7 @@ export const NotificationActions: FC<NotificationActionsProps> = ({ id, actions 
           class="bg-elevated hover:bg-card rounded-8 px-2 py-1 transition"
           onClicked={() => invoke(id, action.id)}
         >
-          <label class="text-dim text-[12px]" valign={Gtk.Align.CENTER} label={action.label} />
+          <label class="text-dim text-12" valign={Gtk.Align.CENTER} label={action.label} />
         </Button>
       )}
     </For>
