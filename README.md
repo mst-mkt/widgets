@@ -4,11 +4,12 @@ Linux Desktop widgets for [my laptop](https://github.com/mst-mkt/dotfiles), buil
 
 ## Widgets
 
-| Widget                 |                             Preview                             | Features                                                                                              |
-| ---------------------- | :-------------------------------------------------------------: | ----------------------------------------------------------------------------------------------------- |
-| **Bar**                |         <img src="./docs/assets/bar.png" width="300" />         | <ul><li>Niri Workspace Indicator</li><li>Notification Panel Button</li><li>(Under construction…)</li> |
-| **Notification Panel** | <img src="./docs/assets/notification-panel.png" height="300" /> | <ul><li>Grouped notifications</li><li>Actions & dismiss</li>                                          |
-| **OSD**                |         <img src="./docs/assets/osd.png" width="300" />         | <ul><li>Audio Volume</li><li>Screen Brightness</li>                                                   |
+| Widget                 |                             Preview                             | Features                                                                                                   |
+| ---------------------- | :-------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------- |
+| **Bar**                |         <img src="./docs/assets/bar.png" width="300" />         | <ul><li>Niri Workspace Indicator</li><li>Notification Panel Button</li><li>(Under construction…)</li></ul> |
+| **Notification Panel** | <img src="./docs/assets/notification-panel.png" height="300" /> | <ul><li>Grouped notifications</li><li>Actions & dismiss</li></ul>                                          |
+| **Player**             |       <img src="./docs/assets/player.png" width="300" />        | <ul><li>Track Info</li><li>Playback Controls</li><li>Audio Visualizer</li></ul>                            |
+| **OSD**                |         <img src="./docs/assets/osd.png" width="300" />         | <ul><li>Audio Volume</li><li>Screen Brightness</li></ul>                                                   |
 
 _More widgets in development…_
 
