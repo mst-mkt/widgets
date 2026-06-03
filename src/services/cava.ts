@@ -15,6 +15,7 @@ export const initCava = () => {
   if (cava === null) return
 
   cava.bars = BAR_COUNT
+  cava.input = AstalCava.Input.PULSE
   cava.connect('notify::values', sync)
 
   const active = isPanelOpen('player')

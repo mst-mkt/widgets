@@ -12,9 +12,18 @@ const state: Store = {
   handlers: {},
 }
 
+export const Input = {
+  FIFO: 0,
+  PORTAUDIO: 1,
+  PIPEWIRE: 2,
+  ALSA: 3,
+  PULSE: 4,
+}
+
 const cava = {
   active: true,
   bars: 20,
+  input: Input.PIPEWIRE,
   get_values: () => state.values,
   connect: vi.fn((signal: string, cb: Handler) => {
     state.handlers[signal] ??= []
@@ -40,8 +49,10 @@ export const reset = () => {
   state.handlers = {}
   cava.active = true
   cava.bars = 20
+  cava.input = Input.PIPEWIRE
 }
 
 export default {
+  Input,
   get_default: () => cava,
 }

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { emit, instance, reset, setValues } from '../../test/mocks/gi-cava'
+import { emit, Input, instance, reset, setValues } from '../../test/mocks/gi-cava'
 
 vi.mock('ags', () => import('../../test/mocks/ags'))
 
@@ -46,6 +46,12 @@ describe('initCava', () => {
     initCava()
 
     expect(cava.bars).toBe(BAR_COUNT)
+  })
+
+  it('captures the pulse monitor input', () => {
+    initCava()
+
+    expect(cava.input).toBe(Input.PULSE)
   })
 
   it('activates cava only while the player panel is open', () => {
