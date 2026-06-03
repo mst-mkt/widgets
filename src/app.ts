@@ -13,7 +13,7 @@ import { initPanel } from './stores/panel'
 import { BarWidget } from './widgets/bar'
 import { NotificationPanelWidget } from './widgets/notification-panel'
 import { OsdWidget } from './widgets/osd'
-import { PlayerPanelWidget } from './widgets/player-panel'
+import { PlayerWidget } from './widgets/player'
 
 import style from './style.css'
 
@@ -28,7 +28,7 @@ const serviceInits = [
   initPanel,
   initOsd,
 ]
-const widgets = [BarWidget, NotificationPanelWidget, PlayerPanelWidget, OsdWidget]
+const widgets = [BarWidget, NotificationPanelWidget, PlayerWidget, OsdWidget]
 
 app.start({
   css: style,

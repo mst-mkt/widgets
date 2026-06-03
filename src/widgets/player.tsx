@@ -13,7 +13,7 @@ import { available } from '../services/player'
 import { closePanel, isPanelOpen } from '../stores/panel'
 import { tweened } from '../utils/tweened'
 
-export const PlayerPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
+export const PlayerWidget = (gdkmonitor?: Gdk.Monitor) => {
   const { TOP, BOTTOM, LEFT, RIGHT } = Astal.WindowAnchor
 
   const progress = tweened(
@@ -24,8 +24,8 @@ export const PlayerPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="player-panel"
-      namespace="player-panel"
+      name="player"
+      namespace="player"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={TOP | BOTTOM | LEFT | RIGHT}
