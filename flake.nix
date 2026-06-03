@@ -76,6 +76,7 @@
 
         preFixup = ''
           gappsWrapperArgs+=(--prefix XDG_DATA_DIRS : "${pkgs.lucide}/share")
+          gappsWrapperArgs+=(--prefix GIO_EXTRA_MODULES : "${pkgs.glib-networking}/lib/gio/modules")
         '';
       });
 
@@ -89,6 +90,7 @@
         ];
         shellHook = ''
           export XDG_DATA_DIRS="${pkgs.lucide}/share''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
+          export GIO_EXTRA_MODULES="${pkgs.glib-networking}/lib/gio/modules''${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}"
         '';
       };
     };
