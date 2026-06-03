@@ -2,14 +2,18 @@ import app from 'ags/gtk4/app'
 
 import { handleRequest } from './handler'
 import { initBrightness } from './services/brightness'
+import { initCava } from './services/cava'
 import { initClock } from './services/clock'
 import { initNotifications } from './services/notifications'
+import { initPlayer } from './services/player'
 import { initWorkspaces } from './services/workspaces'
+import { initCover } from './stores/cover'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
 import { BarWidget } from './widgets/bar'
 import { NotificationPanelWidget } from './widgets/notification-panel'
 import { OsdWidget } from './widgets/osd'
+import { PlayerPanelWidget } from './widgets/player-panel'
 
 import style from './style.css'
 
@@ -18,10 +22,13 @@ const serviceInits = [
   initNotifications,
   initClock,
   initBrightness,
+  initPlayer,
+  initCava,
+  initCover,
   initPanel,
   initOsd,
 ]
-const widgets = [BarWidget, NotificationPanelWidget, OsdWidget]
+const widgets = [BarWidget, NotificationPanelWidget, PlayerPanelWidget, OsdWidget]
 
 app.start({
   css: style,

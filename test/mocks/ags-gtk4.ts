@@ -18,19 +18,31 @@ class Controller {
 
 export class GestureClick extends Controller {}
 
+export class EventControllerMotion extends Controller {}
+
 export class EventControllerKey extends Controller {
   set_propagation_phase() {}
 }
 
 export const Gtk = {
   GestureClick,
+  EventControllerMotion,
   EventControllerKey,
   PropagationPhase: { CAPTURE: 3 },
   DirectionType: { TAB_FORWARD: 0 },
 }
 
+export const textures = {
+  file: { tag: 'file' },
+  bytes: { tag: 'bytes' },
+}
+
 export const Gdk = {
   KEY_Escape: 0xff1b,
+  Texture: {
+    new_from_filename: () => textures.file,
+    new_from_bytes: () => textures.bytes,
+  },
 }
 
 export type Emitter = { emit: (signal: string, ...args: unknown[]) => unknown }

@@ -13,6 +13,11 @@ export type IconName =
   | 'volume-2'
   | 'volume-x'
   | 'sun'
+  | 'play'
+  | 'pause'
+  | 'skip-back'
+  | 'skip-forward'
+  | 'music'
 
 const sizeStyle = (size: number) => {
   return `font-size: ${size}px;`

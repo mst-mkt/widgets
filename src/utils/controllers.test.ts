@@ -1,7 +1,15 @@
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { createWidget, Gdk } from '../../test/mocks/ags-gtk4'
-import { autofocus, compose, onEscape, onPressed, onReleased, pointer } from './controllers'
+import {
+  autofocus,
+  compose,
+  onEscape,
+  onHover,
+  onPressed,
+  onReleased,
+  pointer,
+} from './controllers'
 
 vi.mock('ags/gtk4', () => import('../../test/mocks/ags-gtk4'))
 
@@ -48,6 +56,18 @@ describe('onReleased', () => {
     onReleased(handler)(widget)
 
     widget.controllers[0]?.emit('released')
+
+    expect(handler).toHaveBeenCalledOnce()
+  })
+})
+
+describe('onHover', () => {
+  it('runs the handler when the pointer enters', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    onHover(handler)(widget)
+
+    widget.controllers[0]?.emit('enter')
 
     expect(handler).toHaveBeenCalledOnce()
   })

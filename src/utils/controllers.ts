@@ -22,6 +22,12 @@ export const onReleased = (handler: () => void) => (self: Gtk.Widget) => {
   self.add_controller(click)
 }
 
+export const onHover = (handler: () => void) => (self: Gtk.Widget) => {
+  const motion = new Gtk.EventControllerMotion()
+  motion.connect('enter', () => handler())
+  self.add_controller(motion)
+}
+
 export const onEscape = (handler: () => void) => (self: Gtk.Widget) => {
   const key = new Gtk.EventControllerKey()
   key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
