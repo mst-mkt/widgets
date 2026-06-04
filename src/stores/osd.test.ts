@@ -1,4 +1,3 @@
-import type { Accessor } from 'ags'
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import type { Workspace } from '../services/workspaces'
@@ -7,82 +6,60 @@ vi.mock('ags', () => import('../../test/mocks/ags'))
 
 vi.mock('ags/process', () => import('../../test/mocks/ags-process'))
 
-vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
+const mocks = await vi.hoisted(async () => {
+  const { reactive } = await import('../../test/mocks/reactive')
+  const glib = await import('../../test/mocks/gi-glib')
+  const time = await import('../../test/mocks/ags-time')
 
-const reactive = vi.hoisted(() => {
-  return <T>(initial: T) => {
-    const listeners = new Set<() => void>()
-    let value = initial
-
-    return {
-      accessor: {
-        peek: () => value,
-        subscribe: (cb: () => void) => {
-          listeners.add(cb)
-          return () => listeners.delete(cb)
-        },
-      },
-      set: (next: T) => {
-        value = next
-        for (const cb of listeners) cb()
-      },
-      reset: () => {
-        value = initial
-        listeners.clear()
-      },
-    }
-  }
-})
-
-vi.mock('../services/audio', () => {
   const volume = reactive(0)
   const muted = reactive(false)
+  const brightness = reactive(0)
+
   return {
-    volume: volume.accessor,
-    isMuted: muted.accessor,
-    setVolume: volume.set,
-    setMuted: muted.set,
-    __reset: () => {
-      volume.reset()
-      muted.reset()
+    glib,
+    time,
+    audio: {
+      volume: volume.accessor,
+      isMuted: muted.accessor,
+      setVolume: volume.set,
+      setMuted: muted.set,
+      __reset: () => {
+        volume.reset()
+        muted.reset()
+      },
+    },
+    brightness: {
+      brightness: brightness.accessor,
+      setBrightness: brightness.set,
+      __reset: brightness.reset,
     },
   }
 })
 
-vi.mock('../services/brightness', () => {
-  const brightness = reactive(0)
-  return {
-    brightness: brightness.accessor,
-    setBrightness: brightness.set,
-    __reset: brightness.reset,
-  }
-})
+vi.mock('ags/time', () => mocks.time)
 
-type AudioMock = {
-  volume: Accessor<number>
-  isMuted: Accessor<boolean>
-  setVolume: (value: number) => void
-  setMuted: (value: boolean) => void
-  __reset: () => void
-}
+vi.mock('gi://GLib', () => mocks.glib)
 
-type BrightnessMock = {
-  brightness: Accessor<number>
-  setBrightness: (value: number) => void
-  __reset: () => void
-}
+vi.mock('../services/audio', () => mocks.audio)
+
+vi.mock('../services/brightness', () => mocks.brightness)
 
 const load = async () => {
   vi.resetModules()
-  const glib = (await import('gi://GLib')) as unknown as typeof import('../../test/mocks/gi-glib')
-  glib.resetGLib()
-  const audio = (await import('../services/audio')) as unknown as AudioMock
-  const brightness = (await import('../services/brightness')) as unknown as BrightnessMock
-  audio.__reset()
-  brightness.__reset()
+  mocks.glib.resetGLib()
+  mocks.time.resetTime()
+  mocks.audio.__reset()
+  mocks.brightness.__reset()
   const workspaces = await import('../services/workspaces')
   const osd = await import('./osd')
-  return { glib, audio, brightness, workspaces, osd }
+  return {
+    glib: mocks.glib,
+    time: mocks.time,
+    audio: mocks.audio,
+    brightness: mocks.brightness,
+    workspaces,
+    osd,
+  }
 }
 
 const PAST_GRACE_US = 600 * 1000
@@ -122,17 +99,17 @@ describe('brightnessContent', () => {
 
 describe('initOsd', () => {
   it('stays hidden for changes within the grace period', async () => {
-    const { glib, audio, osd } = await load()
+    const { time, audio, osd } = await load()
     osd.initOsd()
 
     audio.setVolume(0.6)
 
     expect(osd.visible.peek()).toBe(false)
-    expect(glib.timers).toHaveLength(0)
+    expect(time.timers).toHaveLength(0)
   })
 
   it('shows the volume once the grace period has passed', async () => {
-    const { glib, audio, osd } = await load()
+    const { glib, time, audio, osd } = await load()
     osd.initOsd()
     glib.clock.us = PAST_GRACE_US
 
@@ -140,7 +117,7 @@ describe('initOsd', () => {
 
     expect(osd.visible.peek()).toBe(true)
     expect(osd.content.peek()).toEqual({ icon: 'volume-2', value: 0.6 })
-    expect(glib.timers).toHaveLength(1)
+    expect(time.timers).toHaveLength(1)
   })
 
   it('zeroes the bar when the speaker is muted', async () => {
@@ -166,30 +143,31 @@ describe('initOsd', () => {
   })
 
   it('auto-hides after the hide delay fires', async () => {
-    const { glib, audio, osd } = await load()
+    const { glib, time, audio, osd } = await load()
     osd.initOsd()
     glib.clock.us = PAST_GRACE_US
     audio.setVolume(0.6)
 
-    expect(glib.timers[0]?.()).toBe(false)
+    time.timers[0]?.()
+
     expect(osd.visible.peek()).toBe(false)
   })
 
   it('cancels the pending hide timer when re-shown', async () => {
-    const { glib, audio, osd } = await load()
+    const { glib, time, audio, osd } = await load()
     osd.initOsd()
     glib.clock.us = PAST_GRACE_US
 
     audio.setVolume(0.6)
     audio.setVolume(0.7)
 
-    expect(glib.removed).toEqual([1])
-    expect(glib.timers).toHaveLength(2)
+    expect(time.cancelled).toEqual([1])
+    expect(time.timers).toHaveLength(2)
     expect(osd.content.peek()).toEqual({ icon: 'volume-2', value: 0.7 })
   })
 
   it('hides and cancels the timer when the focused workspace changes', async () => {
-    const { glib, audio, workspaces, osd } = await load()
+    const { glib, time, audio, workspaces, osd } = await load()
     workspaces.setWorkspaces(focusWorkspace(1))
     osd.initOsd()
     glib.clock.us = PAST_GRACE_US
@@ -199,7 +177,7 @@ describe('initOsd', () => {
     workspaces.setWorkspaces(focusWorkspace(2))
 
     expect(osd.visible.peek()).toBe(false)
-    expect(glib.removed).toEqual([1])
+    expect(time.cancelled).toEqual([1])
   })
 
   it('stays visible when focus re-emits the same workspace', async () => {

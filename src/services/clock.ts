@@ -1,4 +1,5 @@
 import { createState } from 'ags'
+import { timeout } from 'ags/time'
 import GLib from 'gi://GLib'
 
 const WEEKDAYS = ['月', '火', '水', '木', '金', '土', '日']
@@ -47,17 +48,14 @@ export const initClock = () => {
     const current = now()
     setToday(dateOf(current))
 
-    GLib.timeout_add_seconds(
-      GLib.PRIORITY_DEFAULT,
+    const secondsLeft =
       secondsUntilMidnight({
         hour: current.get_hour(),
         minute: current.get_minute(),
         second: current.get_second(),
-      }) + 1,
-      tick,
-    )
+      }) + 1
 
-    return GLib.SOURCE_REMOVE
+    timeout(secondsLeft * 1000, tick)
   }
 
   tick()

@@ -30,3 +30,55 @@ export const createBinding = <T, K extends keyof T>(object: T, property: K) => {
     () => () => {},
   )
 }
+
+export const createExternal = <T>(
+  initial: T,
+  producer: (set: (next: T | ((prev: T) => T)) => void) => () => void,
+) => {
+  let value = initial
+  let dispose: () => void = () => {}
+  const listeners = new Set<Listener>()
+
+  const subscribe = (cb: Listener) => {
+    if (listeners.size === 0) {
+      dispose = producer((next) => {
+        value = typeof next === 'function' ? (next as (prev: T) => T)(value) : next
+        for (const listener of listeners) {
+          listener()
+        }
+      })
+    }
+    listeners.add(cb)
+    return () => {
+      listeners.delete(cb)
+      if (listeners.size === 0) {
+        dispose()
+      }
+    }
+  }
+
+  return accessorFrom(() => value, subscribe)
+}
+
+export class Accessor<T = unknown> extends Function {
+  #get: () => T
+  #subscribe: (callback: Listener) => () => void
+
+  constructor(get: () => T, subscribe?: (callback: Listener) => () => void) {
+    super()
+    this.#get = get
+    this.#subscribe = subscribe ?? (() => () => {})
+  }
+
+  peek() {
+    return this.#get()
+  }
+
+  subscribe(callback: Listener) {
+    return this.#subscribe(callback)
+  }
+
+  as<R>(transform: (value: T) => R) {
+    return new Accessor(() => transform(this.#get()), this.#subscribe)
+  }
+}

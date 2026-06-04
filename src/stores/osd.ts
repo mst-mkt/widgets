@@ -1,4 +1,5 @@
 import { createState } from 'ags'
+import { type Timer, timeout } from 'ags/time'
 import GLib from 'gi://GLib'
 
 import type { IconName } from '../components/shared/icon'
@@ -18,11 +19,11 @@ const nowMs = () => GLib.get_monotonic_time() / 1000
 export const [visible, setVisible] = createState(false)
 export const [content, setContent] = createState<OsdContent>({ icon: 'volume-2', value: 0 })
 
-const hideTimer = { id: 0 }
+let hideTimer: Timer | null = null
 
 const clearTimer = () => {
-  if (hideTimer.id !== 0) GLib.source_remove(hideTimer.id)
-  hideTimer.id = 0
+  hideTimer?.cancel()
+  hideTimer = null
 }
 
 const hide = () => {
@@ -36,10 +37,9 @@ const show = (next: OsdContent) => {
 
   clearTimer()
 
-  hideTimer.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, HIDE_DELAY, () => {
+  hideTimer = timeout(HIDE_DELAY, () => {
     setVisible(false)
-    hideTimer.id = 0
-    return GLib.SOURCE_REMOVE
+    hideTimer = null
   })
 }
 

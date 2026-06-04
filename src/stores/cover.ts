@@ -1,4 +1,4 @@
-import { createState } from 'ags'
+import { createExternal } from 'ags'
 import { Gdk } from 'ags/gtk4'
 import GLib from 'gi://GLib'
 import Soup from 'gi://Soup'
@@ -7,10 +7,6 @@ import { artUrl, coverArt } from '../services/player'
 import { resolveSource } from '../utils/cover'
 
 const session = new Soup.Session()
-
-export const [cover, setCover] = createState<Gdk.Texture | null>(null)
-
-let request = 0
 
 const textureFromBytes = (bytes: GLib.Bytes): Gdk.Texture | null => {
   try {
@@ -28,29 +24,37 @@ const textureFromFile = (path: string): Gdk.Texture | null => {
   }
 }
 
-const fetchRemote = (url: string, id: number) => {
-  const message = Soup.Message.new('GET', url)
-  session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, result) => {
-    if (id !== request) return
-    try {
-      setCover(textureFromBytes(session.send_and_read_finish(result)))
-    } catch {
-      setCover(null)
-    }
-  })
-}
+export const cover = createExternal<Gdk.Texture | null>(null, (set) => {
+  let request = 0
 
-const update = () => {
-  const id = ++request
-  const source = resolveSource(coverArt.peek(), artUrl.peek())
+  const fetchRemote = (url: string, id: number) => {
+    const message = Soup.Message.new('GET', url)
+    session.send_and_read_async(message, GLib.PRIORITY_DEFAULT, null, (_, result) => {
+      if (id !== request) return
+      try {
+        set(textureFromBytes(session.send_and_read_finish(result)))
+      } catch {
+        set(null)
+      }
+    })
+  }
 
-  if (source.kind === 'file') setCover(textureFromFile(source.path))
-  else if (source.kind === 'url') fetchRemote(source.url, id)
-  else setCover(null)
-}
+  const update = () => {
+    const id = ++request
+    const source = resolveSource(coverArt.peek(), artUrl.peek())
 
-export const initCover = () => {
+    if (source.kind === 'file') set(textureFromFile(source.path))
+    else if (source.kind === 'url') fetchRemote(source.url, id)
+    else set(null)
+  }
+
   update()
-  coverArt.subscribe(update)
-  artUrl.subscribe(update)
-}
+  const unsubscribeCoverArt = coverArt.subscribe(update)
+  const unsubscribeArtUrl = artUrl.subscribe(update)
+
+  return () => {
+    request++
+    unsubscribeCoverArt()
+    unsubscribeArtUrl()
+  }
+})

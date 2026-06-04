@@ -7,12 +7,9 @@ import GLib from 'gi://GLib'
 import { handleRequest } from './handler'
 import { initAudio } from './services/audio'
 import { initBrightness } from './services/brightness'
-import { initCava } from './services/cava'
 import { initClock } from './services/clock'
 import { initNotifications } from './services/notifications'
-import { initPlayer } from './services/player'
 import { initWorkspaces } from './services/workspaces'
-import { initCover } from './stores/cover'
 import { initLauncher } from './stores/launcher'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
@@ -30,9 +27,6 @@ const serviceInits = [
   initClock,
   initBrightness,
   initAudio,
-  initPlayer,
-  initCava,
-  initCover,
   initPanel,
   initOsd,
   initLauncher,

@@ -1,4 +1,4 @@
-import { createState } from 'ags'
+import { createExternal } from 'ags'
 import AstalMpris from 'gi://AstalMpris'
 
 const TARGET = 'org.mpris.MediaPlayer2.spotifyd'
@@ -53,10 +53,44 @@ export const readPlayer = (player: Source): PlayerState => ({
   isPlaying: player.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
 })
 
-let mpris: AstalMpris.Mpris | null = null
-const getMpris = () => (mpris ??= AstalMpris.Mpris.get_default())
+let current: AstalMpris.Player | null = null
 
-const [state, setState] = createState<PlayerState>(EMPTY)
+const state = createExternal<PlayerState>(EMPTY, (set) => {
+  const mpris = AstalMpris.Mpris.get_default()
+  let unbind = () => {}
+
+  const rebind = () => {
+    unbind()
+    current = mpris.get_players().find((player) => matchesTarget(player.busName)) ?? null
+
+    if (current === null) {
+      unbind = () => {}
+      set(EMPTY)
+      return
+    }
+
+    const player = current
+    const ids = NOTIFY_SIGNALS.map((signal) =>
+      player.connect(signal, () => set(readPlayer(player))),
+    )
+    unbind = () => {
+      for (const id of ids) player.disconnect(id)
+    }
+    set(readPlayer(player))
+  }
+
+  rebind()
+  const addedId = mpris.connect('player-added', rebind)
+  const closedId = mpris.connect('player-closed', rebind)
+
+  return () => {
+    unbind()
+    current = null
+    mpris.disconnect(addedId)
+    mpris.disconnect(closedId)
+    set(EMPTY)
+  }
+})
 
 export const available = state.as((s) => s.available)
 export const title = state.as((s) => s.title)
@@ -67,30 +101,6 @@ export const canGoNext = state.as((s) => s.canGoNext)
 export const canGoPrevious = state.as((s) => s.canGoPrevious)
 export const isPlaying = state.as((s) => s.isPlaying)
 
-let current: AstalMpris.Player | null = null
-let handlers: number[] = []
-
-const findPlayer = () => {
-  const players = getMpris().get_players()
-  return players.find((player) => matchesTarget(player.busName)) ?? null
-}
-
-const sync = () => setState(current !== null ? readPlayer(current) : EMPTY)
-
-const bind = (player: AstalMpris.Player | null) => {
-  if (current !== null) for (const id of handlers) current.disconnect(id)
-  handlers = []
-  current = player
-  if (player !== null) handlers = NOTIFY_SIGNALS.map((signal) => player.connect(signal, sync))
-  sync()
-}
-
 export const playPause = () => current?.play_pause()
 export const next = () => current?.next()
 export const previous = () => current?.previous()
-
-export const initPlayer = () => {
-  bind(findPlayer())
-  getMpris().connect('player-added', () => bind(findPlayer()))
-  getMpris().connect('player-closed', () => bind(findPlayer()))
-}

@@ -30,6 +30,7 @@ const cava = {
     state.handlers[signal].push(cb)
     return 0
   }),
+  disconnect: vi.fn(),
 }
 
 export const instance = () => cava

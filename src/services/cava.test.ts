@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { emit, Input, instance, reset as resetCava, setValues } from '../../test/mocks/gi-cava'
 
@@ -8,32 +8,44 @@ vi.mock('ags/process', () => import('../../test/mocks/ags-process'))
 
 vi.mock('gi://AstalCava', () => import('../../test/mocks/gi-cava'))
 
-const { initCava, bars, setBars, BAR_COUNT } = await import('./cava')
+const { bars, BAR_COUNT } = await import('./cava')
 const { openPanel, closePanel } = await import('../stores/panel')
 
 const cava = instance()
 
+const noop = () => {}
+
 beforeEach(() => {
   resetCava()
   closePanel()
-  setBars([])
 })
 
-describe('initCava', () => {
+let dispose = noop
+
+const start = () => {
+  dispose = bars.subscribe(noop)
+}
+
+afterEach(() => {
+  dispose()
+  dispose = noop
+})
+
+describe('cava', () => {
   it('configures the bar count', () => {
-    initCava()
+    start()
 
     expect(cava.bars).toBe(BAR_COUNT)
   })
 
   it('captures the pulse monitor input', () => {
-    initCava()
+    start()
 
     expect(cava.input).toBe(Input.PULSE)
   })
 
   it('activates cava only while the player panel is open', () => {
-    initCava()
+    start()
     expect(cava.active).toBe(false)
 
     openPanel('player')
@@ -44,7 +56,7 @@ describe('initCava', () => {
   })
 
   it('syncs the cava values into the bars state on notify::values', () => {
-    initCava()
+    start()
     openPanel('player')
 
     setValues([0, 0.5, 1])
@@ -54,7 +66,7 @@ describe('initCava', () => {
   })
 
   it('clears the bars when the panel closes', () => {
-    initCava()
+    start()
     openPanel('player')
     setValues([1, 1])
     emit('notify::values')

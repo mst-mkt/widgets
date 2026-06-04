@@ -1,6 +1,6 @@
 import { createState } from 'ags'
 import { execAsync, subprocess } from 'ags/process'
-import GLib from 'gi://GLib'
+import { type Timer, timeout } from 'ags/time'
 
 import { run } from '../utils/exec'
 import { clamp } from '../utils/math'
@@ -28,16 +28,14 @@ export const setBrightness = (value: number) => {
 export const initBrightness = () => {
   void read()
 
-  const timer = { id: 0 }
+  let timer: Timer | null = null
   subprocess(
     ['bash', '-c', 'stdbuf -oL udevadm monitor --udev --subsystem-match=backlight'],
     () => {
-      if (timer.id !== 0) GLib.source_remove(timer.id)
-
-      timer.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, DEBOUNCE_MS, () => {
+      timer?.cancel()
+      timer = timeout(DEBOUNCE_MS, () => {
         void read()
-        timer.id = 0
-        return GLib.SOURCE_REMOVE
+        timer = null
       })
     },
   )

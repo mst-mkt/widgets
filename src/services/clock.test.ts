@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
-import { resetGLib, timers } from '../../test/mocks/gi-glib'
+import { resetTime, timers } from '../../test/mocks/ags-time'
 import { formatDate, initClock, secondsUntilMidnight, setToday, today, weekdayLabel } from './clock'
 
 vi.mock('ags', () => import('../../test/mocks/ags'))
+
+vi.mock('ags/time', () => import('../../test/mocks/ags-time'))
 
 vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
 
@@ -40,7 +42,7 @@ describe('secondsUntilMidnight', () => {
 })
 
 describe('initClock', () => {
-  beforeEach(resetGLib)
+  beforeEach(resetTime)
 
   it('sets today and schedules a midnight tick', () => {
     setToday('stale')
@@ -51,12 +53,11 @@ describe('initClock', () => {
     expect(timers).toHaveLength(1)
   })
 
-  it('reschedules itself and removes the fired timer', () => {
+  it('reschedules itself for the next midnight when the tick fires', () => {
     initClock()
 
-    const fired = timers[0]?.()
+    timers[0]?.()
 
-    expect(fired).toBe(false)
     expect(timers).toHaveLength(2)
   })
 })

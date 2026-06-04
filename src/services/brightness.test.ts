@@ -4,6 +4,8 @@ vi.mock('ags', () => import('../../test/mocks/ags'))
 
 vi.mock('ags/process', () => import('../../test/mocks/ags-process'))
 
+vi.mock('ags/time', () => import('../../test/mocks/ags-time'))
+
 vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
 
 const { parseBrightness } = await import('./brightness')

@@ -15,17 +15,18 @@ vi.mock('ags', () => import('../../test/mocks/ags'))
 
 vi.mock('gi://AstalMpris', () => import('../../test/mocks/gi-mpris'))
 
-const {
-  matchesTarget,
-  readPlayer,
-  initPlayer,
-  available,
-  title,
-  isPlaying,
-  playPause,
-  next,
-  previous,
-} = await import('./player')
+const { matchesTarget, readPlayer, available, title, isPlaying, playPause, next, previous } =
+  await import('./player')
+
+let stop: (() => void) | null = null
+const activate = () => {
+  stop?.()
+  stop = available.subscribe(() => {})
+}
+const deactivate = () => {
+  stop?.()
+  stop = null
+}
 
 const SPOTIFYD = 'org.mpris.MediaPlayer2.spotifyd.instance390277'
 
@@ -72,14 +73,17 @@ describe('readPlayer', () => {
 })
 
 describe('initPlayer', () => {
-  beforeEach(reset)
+  beforeEach(() => {
+    deactivate()
+    reset()
+  })
 
   it('binds to the spotifyd player and exposes its state', () => {
     setMockPlayers([
       createPlayer({ busName: SPOTIFYD, title: 'Song', playbackStatus: PlaybackStatus.PLAYING }),
     ])
 
-    initPlayer()
+    activate()
 
     expect(available.peek()).toBe(true)
     expect(title.peek()).toBe('Song')
@@ -89,7 +93,7 @@ describe('initPlayer', () => {
   it('stays empty when no spotifyd player is present', () => {
     setMockPlayers([createPlayer({ busName: 'org.mpris.MediaPlayer2.firefox', title: 'Tab' })])
 
-    initPlayer()
+    activate()
 
     expect(available.peek()).toBe(false)
     expect(title.peek()).toBe('')
@@ -98,7 +102,7 @@ describe('initPlayer', () => {
   it('re-syncs state when the bound player emits a notify signal', () => {
     const player = createPlayer({ busName: SPOTIFYD, title: 'Old' })
     setMockPlayers([player])
-    initPlayer()
+    activate()
 
     player.title = 'New'
     notify(player)
@@ -107,7 +111,7 @@ describe('initPlayer', () => {
   })
 
   it('binds to a spotifyd player added after init', () => {
-    initPlayer()
+    activate()
     expect(available.peek()).toBe(false)
 
     setMockPlayers([createPlayer({ busName: SPOTIFYD, title: 'Late' })])
@@ -119,7 +123,7 @@ describe('initPlayer', () => {
 
   it('clears state when the player closes', () => {
     setMockPlayers([createPlayer({ busName: SPOTIFYD, title: 'Song' })])
-    initPlayer()
+    activate()
 
     setMockPlayers([])
     emit('player-closed')
@@ -131,7 +135,7 @@ describe('initPlayer', () => {
   it('stops syncing from the previous player after rebinding', () => {
     const first = createPlayer({ busName: SPOTIFYD, title: 'First' })
     setMockPlayers([first])
-    initPlayer()
+    activate()
 
     const second = createPlayer({ busName: SPOTIFYD, title: 'Second' })
     setMockPlayers([second])
@@ -146,11 +150,14 @@ describe('initPlayer', () => {
 })
 
 describe('player actions', () => {
-  beforeEach(reset)
+  beforeEach(() => {
+    deactivate()
+    reset()
+  })
 
   it('forwards play/pause, next and previous to the bound player', () => {
     setMockPlayers([createPlayer({ busName: SPOTIFYD })])
-    initPlayer()
+    activate()
 
     playPause()
     next()
@@ -161,7 +168,7 @@ describe('player actions', () => {
 
   it('are no-ops when no player is bound', () => {
     setMockPlayers([])
-    initPlayer()
+    activate()
 
     playPause()
     next()

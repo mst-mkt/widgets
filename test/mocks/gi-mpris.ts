@@ -76,6 +76,7 @@ const mpris = {
     state.handlers[signal].push(cb)
     return 0
   }),
+  disconnect: vi.fn(),
 }
 
 export const setMockPlayers = (players: MockPlayer[]) => {

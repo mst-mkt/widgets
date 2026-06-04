@@ -11,37 +11,19 @@ vi.mock('ags/gtk4', () => import('../../test/mocks/ags-gtk4'))
 
 vi.mock('gi://Soup', () => import('../../test/mocks/gi-soup'))
 
-const reactive = vi.hoisted(() => {
-  return (initial: string) => {
-    const listeners = new Set<() => void>()
-    let value = initial
-
-    return {
-      accessor: {
-        peek: () => value,
-        subscribe: (cb: () => void) => {
-          listeners.add(cb)
-          return () => listeners.delete(cb)
-        },
-      },
-      set: (next: string) => {
-        value = next
-        for (const cb of listeners) cb()
-      },
-    }
-  }
+const player = await vi.hoisted(async () => {
+  const { reactive } = await import('../../test/mocks/reactive')
+  return { coverArt: reactive(''), artUrl: reactive('') }
 })
-
-const player = vi.hoisted(() => ({ coverArt: reactive(''), artUrl: reactive('') }))
 
 vi.mock('../services/player', () => ({
   coverArt: player.coverArt.accessor,
   artUrl: player.artUrl.accessor,
 }))
 
-const { initCover, cover } = await import('./cover')
+const { cover } = await import('./cover')
 
-initCover()
+cover.subscribe(() => {})
 
 describe('cover store', () => {
   it('resolves a local cover-art path to a file texture', () => {
