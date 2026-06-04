@@ -24,10 +24,10 @@ export const OsdBar: FC<OsdBarProps> = ({ icon, value }) => (
       overflow={Gtk.Overflow.HIDDEN}
     >
       <box
-        class="bg-gold rounded-full"
+        class="bg-gold transition-200 rounded-full"
         halign={Gtk.Align.START}
         vexpand
-        widthRequest={value.as((v) => Math.round(clamp(v, 0, 1) * BAR_WIDTH))}
+        css={value.as((v) => `min-width: ${Math.round(clamp(v, 0, 1) * BAR_WIDTH)}px;`)}
       />
     </box>
   </box>

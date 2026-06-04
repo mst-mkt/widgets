@@ -18,10 +18,6 @@ export const OsdWidget = (gdkmonitor?: Gdk.Monitor) => {
     visible.as((open) => (open ? 1 : 0)),
     { duration: 240 },
   )
-  const level = tweened(
-    content.as((c) => c.value),
-    { duration: 200 },
-  )
   const playerProgress = tweened(
     isPanelOpen('player').as((open) => (open ? 1 : 0)),
     { duration: 280 },
@@ -48,7 +44,7 @@ export const OsdWidget = (gdkmonitor?: Gdk.Monitor) => {
         css={progress.as(slide([0, 12]))}
       >
         <box css={playerProgress.as((p) => `opacity: ${Math.abs(2 * p - 1)};`)}>
-          <OsdBar icon={content.as((c) => c.icon)} value={level} />
+          <OsdBar icon={content.as((c) => c.icon)} value={content.as((c) => c.value)} />
         </box>
       </box>
     </window>
