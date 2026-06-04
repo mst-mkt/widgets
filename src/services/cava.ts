@@ -5,23 +5,25 @@ import { isPanelOpen } from '../stores/panel'
 
 export const BAR_COUNT = 40
 
-const cava = AstalCava.get_default()
+let cava: AstalCava.Cava | null = null
 
 export const [bars, setBars] = createState<number[]>([])
 
 const sync = () => setBars(cava?.get_values() ?? [])
 
 export const initCava = () => {
+  cava = AstalCava.get_default()
   if (cava === null) return
 
-  cava.bars = BAR_COUNT
-  cava.input = AstalCava.Input.PULSE
-  cava.connect('notify::values', sync)
+  const instance = cava
+  instance.bars = BAR_COUNT
+  instance.input = AstalCava.Input.PULSE
+  instance.connect('notify::values', sync)
 
   const active = isPanelOpen('player')
-  cava.active = active.peek()
+  instance.active = active.peek()
   active.subscribe(() => {
-    cava.active = active.peek()
+    instance.active = active.peek()
     if (!active.peek()) setBars([])
   })
 }

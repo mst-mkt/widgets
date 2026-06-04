@@ -11,7 +11,9 @@ const load = async (speaker: Speaker | null) => {
       get_default: () => (speaker === null ? null : { audio: { defaultSpeaker: speaker } }),
     },
   }))
-  return await import('./audio')
+  const audio = await import('./audio')
+  audio.initAudio()
+  return audio
 }
 
 describe('volume and isMuted', () => {

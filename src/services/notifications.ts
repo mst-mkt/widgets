@@ -82,27 +82,30 @@ export const hasDefaultAction = (actions: NotificationAction[]) => {
   return actions.some((action) => action.id === 'default')
 }
 
-const notifd = AstalNotifd.get_default()
+let notifd: AstalNotifd.Notifd | null = null
+const getNotifd = () => (notifd ??= AstalNotifd.get_default())
 
 export const [notifications, setNotifications] = createState<Notification[]>([])
 
 export const groups = notifications.as(groupByApp)
 export const hasNotifications = notifications.as((list) => list.length > 0)
 
-const sync = () => setNotifications(sortByTime(notifd.get_notifications().map(toNotification)))
+const sync = () => setNotifications(sortByTime(getNotifd().get_notifications().map(toNotification)))
 
 export const initNotifications = () => {
   sync()
-  notifd.connect('notified', sync)
-  notifd.connect('resolved', sync)
+  getNotifd().connect('notified', sync)
+  getNotifd().connect('resolved', sync)
 }
 
 export const dismissAll = () => {
-  notifd.get_notifications().forEach((notification) => notification.dismiss())
+  getNotifd()
+    .get_notifications()
+    .forEach((notification) => notification.dismiss())
 }
 
 export const invoke = (id: number, actionId: string) => {
-  notifd.get_notification(id)?.invoke(actionId)
+  getNotifd().get_notification(id)?.invoke(actionId)
 }
 
 export const activate = (notification: Notification) => {

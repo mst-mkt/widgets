@@ -53,7 +53,8 @@ export const readPlayer = (player: Source): PlayerState => ({
   isPlaying: player.playbackStatus === AstalMpris.PlaybackStatus.PLAYING,
 })
 
-const mpris = AstalMpris.Mpris.get_default()
+let mpris: AstalMpris.Mpris | null = null
+const getMpris = () => (mpris ??= AstalMpris.Mpris.get_default())
 
 const [state, setState] = createState<PlayerState>(EMPTY)
 
@@ -70,7 +71,8 @@ let current: AstalMpris.Player | null = null
 let handlers: number[] = []
 
 const findPlayer = () => {
-  return mpris.get_players().find((player) => matchesTarget(player.busName)) ?? null
+  const players = getMpris().get_players()
+  return players.find((player) => matchesTarget(player.busName)) ?? null
 }
 
 const sync = () => setState(current !== null ? readPlayer(current) : EMPTY)
@@ -89,6 +91,6 @@ export const previous = () => current?.previous()
 
 export const initPlayer = () => {
   bind(findPlayer())
-  mpris.connect('player-added', () => bind(findPlayer()))
-  mpris.connect('player-closed', () => bind(findPlayer()))
+  getMpris().connect('player-added', () => bind(findPlayer()))
+  getMpris().connect('player-closed', () => bind(findPlayer()))
 }

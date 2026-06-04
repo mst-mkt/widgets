@@ -1,6 +1,7 @@
 import app from 'ags/gtk4/app'
 
 import { handleRequest } from './handler'
+import { initAudio } from './services/audio'
 import { initBrightness } from './services/brightness'
 import { initCava } from './services/cava'
 import { initClock } from './services/clock'
@@ -24,6 +25,7 @@ const serviceInits = [
   initNotifications,
   initClock,
   initBrightness,
+  initAudio,
   initPlayer,
   initCava,
   initCover,

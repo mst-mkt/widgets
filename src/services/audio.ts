@@ -1,16 +1,12 @@
-import { createBinding, createState, type Accessor } from 'ags'
+import { createBinding, createState } from 'ags'
 import AstalWp from 'gi://AstalWp'
 
 import { clamp } from '../utils/math'
 
-const wireplumber = AstalWp.get_default()
-const speaker = wireplumber?.audio?.defaultSpeaker ?? null
+export const [volume, setVolumeState] = createState(0)
+export const [isMuted, setMutedState] = createState(false)
 
-export const volume: Accessor<number> =
-  speaker !== null ? createBinding(speaker, 'volume') : createState(0)[0]
-
-export const isMuted: Accessor<boolean> =
-  speaker !== null ? createBinding(speaker, 'mute') : createState(false)[0]
+let speaker: AstalWp.Endpoint | null = null
 
 export const setVolume = (value: number) => {
   if (speaker !== null) {
@@ -22,4 +18,18 @@ export const toggleMute = () => {
   if (speaker !== null) {
     speaker.mute = !speaker.mute
   }
+}
+
+export const initAudio = () => {
+  speaker = AstalWp.get_default()?.audio?.defaultSpeaker ?? null
+  if (speaker === null) return
+
+  const volumeBinding = createBinding(speaker, 'volume')
+  const mutedBinding = createBinding(speaker, 'mute')
+
+  setVolumeState(volumeBinding.peek())
+  setMutedState(mutedBinding.peek())
+
+  volumeBinding.subscribe(() => setVolumeState(volumeBinding.peek()))
+  mutedBinding.subscribe(() => setMutedState(mutedBinding.peek()))
 }
