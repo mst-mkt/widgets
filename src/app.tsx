@@ -1,3 +1,5 @@
+import { createBinding, For } from 'ags'
+import { Gtk } from 'ags/gtk4'
 import app from 'ags/gtk4/app'
 
 import { handleRequest } from './handler'
@@ -33,18 +35,27 @@ const serviceInits = [
   initOsd,
   initLauncher,
 ]
-const widgets = [BarWidget, NotificationPanelWidget, PlayerWidget, OsdWidget, LauncherWidget]
+
+const overlayWidgets = [NotificationPanelWidget, PlayerWidget, OsdWidget, LauncherWidget]
 
 app.start({
   css: style,
   requestHandler: (argv, res) => res(handleRequest(argv)),
   main: () => {
     for (const start of serviceInits) start()
+    for (const overlay of overlayWidgets) overlay()
 
-    for (const widget of widgets) {
-      for (const monitor of app.get_monitors()) {
-        widget(monitor)
-      }
-    }
+    const monitors = createBinding(app, 'monitors')
+
+    return (
+      <For
+        each={monitors}
+        cleanup={(bar) => {
+          if (bar instanceof Gtk.Window) bar.destroy()
+        }}
+      >
+        {(monitor) => BarWidget(monitor)}
+      </For>
+    )
   },
 })

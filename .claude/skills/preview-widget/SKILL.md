@@ -44,8 +44,8 @@ widgets を dev で起動しておく (`pnpm dev`)
 `watch:css` と `watch:ags` は独立に走り順序が不定で変更が反映されない場合がある
 
 ```sh
-pnpm gen:css     # CSS を再生成
-touch src/app.ts # watchexec による再起動を促す
+pnpm gen:css      # CSS を再生成
+touch src/app.tsx # watchexec による再起動を促す
 ```
 
 ## コマンドの内容
