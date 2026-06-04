@@ -26,6 +26,7 @@
       astalPackages = with ags.packages.${system}; [
         io
         astal4
+        apps
         cava
         mpris
         notifd
