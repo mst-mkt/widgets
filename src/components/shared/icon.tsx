@@ -18,6 +18,11 @@ export type IconName =
   | 'skip-back'
   | 'skip-forward'
   | 'music'
+  | 'search'
+  | 'search-x'
+  | 'corner-down-left'
+  | 'arrow-up'
+  | 'arrow-down'
 
 const sizeStyle = (size: number) => {
   return `font-size: ${size}px;`

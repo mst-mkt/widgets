@@ -2,9 +2,9 @@ import { createState } from 'ags'
 
 import { focused } from '../services/workspaces'
 
-export type PanelId = 'notification' | 'player'
+export type PanelId = 'notification' | 'player' | 'launcher'
 
-const panelIds = ['notification', 'player'] as const satisfies PanelId[]
+const panelIds = ['notification', 'player', 'launcher'] as const satisfies PanelId[]
 export const isPanelId = (value: string): value is PanelId => panelIds.includes(value as PanelId)
 
 const [activePanel, setActivePanel] = createState<PanelId | null>(null)

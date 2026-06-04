@@ -35,5 +35,10 @@ export default defineConfig({
         return 'scrolledwindow undershoot, scrolledwindow overshoot { background: none; box-shadow: none; }'
       },
     },
+    {
+      getCSS: () => {
+        return 'entry.launcher-entry, entry.launcher-entry:focus, entry.launcher-entry:focus-within, entry.launcher-entry > text { background-color: transparent; background-image: none; border-width: 0; outline-width: 0; box-shadow: none; }'
+      },
+    },
   ],
 })

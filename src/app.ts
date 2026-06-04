@@ -8,9 +8,11 @@ import { initNotifications } from './services/notifications'
 import { initPlayer } from './services/player'
 import { initWorkspaces } from './services/workspaces'
 import { initCover } from './stores/cover'
+import { initLauncher } from './stores/launcher'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
 import { BarWidget } from './widgets/bar'
+import { LauncherWidget } from './widgets/launcher'
 import { NotificationPanelWidget } from './widgets/notification-panel'
 import { OsdWidget } from './widgets/osd'
 import { PlayerWidget } from './widgets/player'
@@ -27,8 +29,9 @@ const serviceInits = [
   initCover,
   initPanel,
   initOsd,
+  initLauncher,
 ]
-const widgets = [BarWidget, NotificationPanelWidget, PlayerWidget, OsdWidget]
+const widgets = [BarWidget, NotificationPanelWidget, PlayerWidget, OsdWidget, LauncherWidget]
 
 app.start({
   css: style,

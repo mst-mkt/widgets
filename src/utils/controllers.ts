@@ -39,6 +39,13 @@ export const onEscape = (handler: () => void) => (self: Gtk.Widget) => {
   self.add_controller(key)
 }
 
+export const onKeyPress = (handler: (keyval: number) => boolean) => (self: Gtk.Widget) => {
+  const key = new Gtk.EventControllerKey()
+  key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+  key.connect('key-pressed', (_controller, keyval) => handler(keyval))
+  self.add_controller(key)
+}
+
 export const autofocus = (self: Gtk.Widget) => {
   self.set_focusable(true)
   self.connect('map', () => {

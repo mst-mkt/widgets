@@ -6,6 +6,7 @@ import {
   compose,
   onEscape,
   onHover,
+  onKeyPress,
   onPressed,
   onReleased,
   pointer,
@@ -93,6 +94,29 @@ describe('onEscape', () => {
     const handled = widget.controllers[0]?.emit('key-pressed', 0x61)
 
     expect(handler).not.toHaveBeenCalled()
+    expect(handled).toBe(false)
+  })
+})
+
+describe('onKeyPress', () => {
+  it('forwards the keyval to the handler and propagates its result', () => {
+    const handler = vi.fn(() => true)
+    const widget = createWidget()
+    onKeyPress(handler)(widget)
+
+    const handled = widget.controllers[0]?.emit('key-pressed', 0xff52)
+
+    expect(handler).toHaveBeenCalledWith(0xff52)
+    expect(handled).toBe(true)
+  })
+
+  it('lets unhandled keys propagate', () => {
+    const handler = vi.fn(() => false)
+    const widget = createWidget()
+    onKeyPress(handler)(widget)
+
+    const handled = widget.controllers[0]?.emit('key-pressed', 0x61)
+
     expect(handled).toBe(false)
   })
 })
