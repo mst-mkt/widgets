@@ -39,6 +39,8 @@ export const [workspaces, setWorkspaces] = createState<Workspace[]>([])
 
 export const focused = workspaces.as(focusedIdx)
 
+export const focusedId = workspaces.as((list) => list.find((w) => w.is_focused)?.id ?? -1)
+
 const setFocused = (match: (workspace: Workspace) => boolean) => {
   return setWorkspaces((prev) => markFocused(prev, match))
 }
@@ -60,4 +62,9 @@ export const initWorkspaces = () => {
 export const focus = (idx: number) => {
   setFocused((workspace) => workspace.idx === idx)
   void run(['niri', 'msg', 'action', 'focus-workspace', `${idx}`])
+}
+
+export const focusById = (id: number) => {
+  const idx = workspaces.peek().find((workspace) => workspace.id === id)?.idx
+  if (idx !== undefined) focus(idx)
 }
