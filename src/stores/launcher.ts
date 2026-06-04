@@ -1,4 +1,4 @@
-import { createState } from 'ags'
+import { createComputed, createState } from 'ags'
 
 import { launch, search } from '../services/launcher'
 import { clamp } from '../utils/math'
@@ -6,9 +6,13 @@ import { closePanel, isPanelOpen } from './panel'
 
 const [text, setText] = createState('')
 const [index, setIndex] = createState(0)
+const [revision, setRevision] = createState(0)
 
 export const query = text
-export const results = text.as(search)
+export const results = createComputed(() => {
+  revision()
+  return search(text())
+})
 export const hasResults = results.as((list) => list.length > 0)
 export const selected = index
 
@@ -16,6 +20,8 @@ export const setQuery = (value: string) => {
   setText(value)
   setIndex(0)
 }
+
+const refresh = () => setRevision((n) => n + 1)
 
 export const moveSelection = (delta: number) => {
   const count = results.peek().length
@@ -39,6 +45,8 @@ export const initLauncher = () => {
   const open = isPanelOpen('launcher')
 
   open.subscribe(() => {
-    if (open.peek()) setQuery('')
+    if (!open.peek()) return
+    setQuery('')
+    refresh()
   })
 }

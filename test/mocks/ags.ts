@@ -1,8 +1,17 @@
 type Listener = () => void
 
+type Tracked = { subscribe: (cb: Listener) => () => void }
+
+const accessStack: Array<Set<Tracked>> = []
+
 const accessorFrom = <T>(get: () => T, subscribe: (cb: Listener) => () => void) => {
+  const read = () => {
+    accessStack.at(-1)?.add(accessor)
+    return get()
+  }
   const as = <R>(fn: (v: T) => R) => accessorFrom(() => fn(get()), subscribe)
-  return Object.assign(get, { get, peek: get, subscribe, as })
+  const accessor = Object.assign(read, { get, peek: get, subscribe, as })
+  return accessor
 }
 
 export const createState = <T>(initial: T) => {
@@ -22,6 +31,21 @@ export const createState = <T>(initial: T) => {
   }
 
   return [accessorFrom(() => value, subscribe), set]
+}
+
+export const createComputed = <T>(producer: () => T) => {
+  const subscribe = (cb: Listener) => {
+    const deps = new Set<Tracked>()
+    accessStack.push(deps)
+    producer()
+    accessStack.pop()
+    const disposers = [...deps].map((dep) => dep.subscribe(cb))
+    return () => {
+      for (const dispose of disposers) dispose()
+    }
+  }
+
+  return accessorFrom(producer, subscribe)
 }
 
 export const createBinding = <T, K extends keyof T>(object: T, property: K) => {
