@@ -39,15 +39,6 @@ nu .claude/skills/preview-widget/scripts/capture.nu {panelId}
 widgets を dev で起動しておく (`pnpm dev`)
 稼働は `ags list` で確認できる
 
-## CSS を変えた直後
-
-`watch:css` と `watch:ags` は独立に走り順序が不定で変更が反映されない場合がある
-
-```sh
-pnpm gen:css      # CSS を再生成
-touch src/app.tsx # watchexec による再起動を促す
-```
-
 ## コマンドの内容
 
 `capture.nu` を使わず手元で撮るときの流れ。上から順に実行する。

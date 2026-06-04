@@ -1,6 +1,8 @@
 import { createBinding, For } from 'ags'
+import { monitorFile } from 'ags/file'
 import { Gtk } from 'ags/gtk4'
 import app from 'ags/gtk4/app'
+import GLib from 'gi://GLib'
 
 import { handleRequest } from './handler'
 import { initAudio } from './services/audio'
@@ -42,6 +44,12 @@ app.start({
   css: style,
   requestHandler: (argv, res) => res(handleRequest(argv)),
   main: () => {
+    const devCss = GLib.getenv('WIDGETS_DEV_CSS')
+    if (devCss !== null) {
+      app.apply_css(devCss, true)
+      monitorFile(devCss, () => app.apply_css(devCss, true))
+    }
+
     for (const start of serviceInits) start()
     for (const overlay of overlayWidgets) overlay()
 
