@@ -24,8 +24,8 @@ export const PlayerWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="player"
-      namespace="player"
+      name="widgets:player"
+      namespace="widgets:player"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={TOP | BOTTOM | LEFT | RIGHT}

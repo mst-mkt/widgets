@@ -11,9 +11,9 @@ export const BarWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible
-      name="bar"
+      name="widgets:bar"
       class="bg-transparent"
-      namespace="bar"
+      namespace="widgets:bar"
       gdkmonitor={gdkmonitor}
       anchor={BOTTOM | LEFT | RIGHT}
       exclusivity={Astal.Exclusivity.EXCLUSIVE}

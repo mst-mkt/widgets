@@ -24,8 +24,8 @@ export const LauncherWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="launcher"
-      namespace="launcher"
+      name="widgets:launcher"
+      namespace="widgets:launcher"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={TOP | BOTTOM | LEFT | RIGHT}

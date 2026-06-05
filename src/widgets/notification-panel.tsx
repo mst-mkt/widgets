@@ -22,8 +22,8 @@ export const NotificationPanelWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="notification-panel"
-      namespace="notification-panel"
+      name="widgets:notification-panel"
+      namespace="widgets:notification-panel"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={TOP | BOTTOM | LEFT | RIGHT}

@@ -30,8 +30,8 @@ export const OsdWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="osd"
-      namespace="osd"
+      name="widgets:osd"
+      namespace="widgets:osd"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={BOTTOM}

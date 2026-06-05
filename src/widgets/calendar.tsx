@@ -20,8 +20,8 @@ export const CalendarWidget = (gdkmonitor?: Gdk.Monitor) => {
   return (
     <window
       visible={progress.as((p) => p > 0.01)}
-      name="calendar"
-      namespace="calendar"
+      name="widgets:calendar"
+      namespace="widgets:calendar"
       class="bg-transparent"
       gdkmonitor={gdkmonitor}
       anchor={TOP | BOTTOM | LEFT | RIGHT}
