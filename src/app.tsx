@@ -14,6 +14,7 @@ import { initLauncher } from './stores/launcher'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
 import { BarWidget } from './widgets/bar'
+import { CalendarWidget } from './widgets/calendar'
 import { LauncherWidget } from './widgets/launcher'
 import { NotificationPanelWidget } from './widgets/notification-panel'
 import { OsdWidget } from './widgets/osd'
@@ -32,7 +33,13 @@ const serviceInits = [
   initLauncher,
 ]
 
-const overlayWidgets = [NotificationPanelWidget, PlayerWidget, OsdWidget, LauncherWidget]
+const overlayWidgets = [
+  NotificationPanelWidget,
+  PlayerWidget,
+  OsdWidget,
+  LauncherWidget,
+  CalendarWidget,
+]
 
 app.start({
   css: style,
