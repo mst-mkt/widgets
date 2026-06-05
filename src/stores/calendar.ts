@@ -1,21 +1,35 @@
 import { createState } from 'ags'
-import GLib from 'gi://GLib'
 
-import { time } from '../services/clock'
-import type { CalDate, YearMonth } from '../utils/calendar'
+import { currentDay } from '../services/clock'
+import { addMonths, type CalDate, type YearMonth } from '../utils/calendar'
+import { isPanelOpen } from './panel'
 
-const currentDate = (): CalDate => {
-  const dt = GLib.DateTime.new_now_local()
-  return { year: dt.get_year(), month: dt.get_month(), day: dt.get_day_of_month() }
-}
-
-const initial = currentDate()
+const initial = currentDay.peek()
 
 export const [viewMonth, setViewMonth] = createState<YearMonth>({
   year: initial.year,
   month: initial.month,
 })
 
-export const todayDate = time.as(
-  (parts): CalDate => ({ year: parts.year, month: parts.month, day: parts.day }),
-)
+export const [selectedDate, setSelectedDate] = createState<CalDate>(initial)
+
+export const todayDate = currentDay
+
+export const prevMonth = () => setViewMonth((month) => addMonths(month, -1))
+export const nextMonth = () => setViewMonth((month) => addMonths(month, 1))
+
+export const selectDay = (date: CalDate) => setSelectedDate(date)
+
+export const goToday = () => {
+  const now = currentDay.peek()
+  setViewMonth({ year: now.year, month: now.month })
+  setSelectedDate(now)
+}
+
+export const initCalendar = () => {
+  const open = isPanelOpen('calendar')
+
+  open.subscribe(() => {
+    if (open.peek()) goToday()
+  })
+}

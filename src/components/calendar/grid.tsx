@@ -1,9 +1,16 @@
-import { With } from 'ags'
+import { createComputed, With } from 'ags'
 import { Gtk } from 'ags/gtk4'
 
-import { todayDate, viewMonth } from '../../stores/calendar'
-import { isSameDay, monthMatrix, type CalDate } from '../../utils/calendar'
+import { selectDay, selectedDate, todayDate, viewMonth } from '../../stores/calendar'
+import {
+  isSameDay,
+  isSameMonth,
+  monthMatrix,
+  type CalDate,
+  type YearMonth,
+} from '../../utils/calendar'
 import type { FC } from '../../utils/types'
+import { Button } from '../shared/button'
 
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土']
 
@@ -13,29 +20,47 @@ const weekdayColor = (index: number) => {
   return 'text-faint'
 }
 
-const DayCell = (date: CalDate | null) => {
-  if (date === null) return <box hexpand />
+type DayState = 'selected' | 'today' | 'normal'
 
-  return (
-    <box hexpand>
-      <box
+const circleClass = (state: DayState) => {
+  if (state === 'selected') return 'bg-gold min-h-8 min-w-8 rounded-full'
+  if (state === 'today') return 'border-gold min-h-8 min-w-8 rounded-full'
+  return 'min-h-8 min-w-8'
+}
+
+const textClass = (state: DayState, outside: boolean) => {
+  if (state === 'selected') return 'text-coal text-13 font-semibold'
+  if (state === 'today') return 'text-gold text-13'
+  return outside ? 'text-ghost text-13' : 'text-dim text-13'
+}
+
+const DayCell = (date: CalDate, view: YearMonth) => {
+  const outside = !isSameMonth(date, view)
+
+  const state = createComputed((): DayState => {
+    if (isSameDay(date, selectedDate())) return 'selected'
+    if (isSameDay(date, todayDate())) return 'today'
+    return 'normal'
+  })
+
+  const cell = (
+    <box halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} class={state.as(circleClass)}>
+      <label
         halign={Gtk.Align.CENTER}
         valign={Gtk.Align.CENTER}
-        class={todayDate.as((t) =>
-          isSameDay(date, t) ? 'bg-gold min-h-8 min-w-8 rounded-full' : 'min-h-8 min-w-8',
-        )}
-      >
-        <label
-          halign={Gtk.Align.CENTER}
-          valign={Gtk.Align.CENTER}
-          hexpand
-          class={todayDate.as((t) =>
-            isSameDay(date, t) ? 'text-coal text-13 font-semibold' : 'text-dim text-13',
-          )}
-          label={`${date.day}`}
-        />
-      </box>
+        hexpand
+        class={state.as((s) => textClass(s, outside))}
+        label={`${date.day}`}
+      />
     </box>
+  )
+
+  if (outside) return <box hexpand>{cell}</box>
+
+  return (
+    <Button hexpand onClicked={() => selectDay(date)}>
+      {cell}
+    </Button>
   )
 }
 
@@ -47,10 +72,10 @@ export const CalendarGrid: FC = () => (
       ))}
     </box>
     <With value={viewMonth}>
-      {({ year, month }: { year: number; month: number }) => (
+      {(view: YearMonth) => (
         <box orientation={Gtk.Orientation.VERTICAL} spacing={4}>
-          {monthMatrix(year, month).map((week) => (
-            <box homogeneous>{week.map(DayCell)}</box>
+          {monthMatrix(view.year, view.month).map((week) => (
+            <box homogeneous>{week.map((date) => DayCell(date, view))}</box>
           ))}
         </box>
       )}

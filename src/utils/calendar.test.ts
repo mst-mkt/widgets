@@ -1,14 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 
-import { daysInMonth, isSameDay, monthMatrix, weekdayOf } from './calendar'
-
-describe('daysInMonth', () => {
-  it('returns the day count per month', () => {
-    expect(daysInMonth(2026, 6)).toBe(30)
-    expect(daysInMonth(2026, 2)).toBe(28)
-    expect(daysInMonth(2024, 2)).toBe(29)
-  })
-})
+import { addMonths, isSameDay, isSameMonth, monthMatrix, weekdayOf } from './calendar'
 
 describe('weekdayOf', () => {
   it('returns the 0=Sunday weekday', () => {
@@ -26,13 +18,38 @@ describe('isSameDay', () => {
   })
 })
 
+describe('isSameMonth', () => {
+  it('matches a date against a year and month', () => {
+    expect(isSameMonth({ year: 2026, month: 6, day: 30 }, { year: 2026, month: 6 })).toBe(true)
+    expect(isSameMonth({ year: 2026, month: 7, day: 1 }, { year: 2026, month: 6 })).toBe(false)
+  })
+})
+
+describe('addMonths', () => {
+  it('advances within a year', () => {
+    expect(addMonths({ year: 2026, month: 6 }, 1)).toEqual({ year: 2026, month: 7 })
+  })
+
+  it('wraps the year in both directions', () => {
+    expect(addMonths({ year: 2026, month: 12 }, 1)).toEqual({ year: 2027, month: 1 })
+    expect(addMonths({ year: 2026, month: 1 }, -1)).toEqual({ year: 2025, month: 12 })
+  })
+})
+
 describe('monthMatrix', () => {
-  it('returns weeks of seven cells starting on Sunday', () => {
+  it('always returns six weeks of seven days', () => {
     const weeks = monthMatrix(2026, 6)
 
+    expect(weeks).toHaveLength(6)
     expect(weeks.every((week) => week.length === 7)).toBe(true)
-    expect(weeks[0]?.[0]).toBe(null)
+  })
+
+  it('fills the edges with adjacent-month days', () => {
+    const weeks = monthMatrix(2026, 6)
+
+    expect(weeks[0]?.[0]).toEqual({ year: 2026, month: 5, day: 31 })
     expect(weeks[0]?.[1]).toEqual({ year: 2026, month: 6, day: 1 })
-    expect(weeks.flat().filter((cell) => cell !== null)).toHaveLength(30)
+    expect(weeks.flat().filter((day) => day.month === 6)).toHaveLength(30)
+    expect(weeks.flat().at(-1)?.month).toBe(7)
   })
 })

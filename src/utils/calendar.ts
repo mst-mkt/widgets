@@ -9,10 +9,6 @@ export type YearMonth = {
   month: number
 }
 
-export const daysInMonth = (year: number, month: number) => {
-  return new Date(Date.UTC(year, month, 0)).getUTCDate()
-}
-
 export const weekdayOf = ({ year, month, day }: CalDate) => {
   return new Date(Date.UTC(year, month - 1, day)).getUTCDay()
 }
@@ -21,16 +17,26 @@ export const isSameDay = (a: CalDate, b: CalDate) => {
   return a.year === b.year && a.month === b.month && a.day === b.day
 }
 
-export const monthMatrix = (year: number, month: number): (CalDate | null)[][] => {
+export const isSameMonth = (date: CalDate, { year, month }: YearMonth) => {
+  return date.year === year && date.month === month
+}
+
+export const addMonths = ({ year, month }: YearMonth, delta: number): YearMonth => {
+  const total = year * 12 + (month - 1) + delta
+  return { year: Math.floor(total / 12), month: (((total % 12) + 12) % 12) + 1 }
+}
+
+const WEEKS = 6
+
+const dateAt = (year: number, month: number, offset: number): CalDate => {
+  const date = new Date(Date.UTC(year, month - 1, 1 + offset))
+  return { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, day: date.getUTCDate() }
+}
+
+export const monthMatrix = (year: number, month: number): CalDate[][] => {
   const leading = weekdayOf({ year, month, day: 1 })
-  const total = daysInMonth(year, month)
-  const cells: (CalDate | null)[] = []
 
-  for (let i = 0; i < leading; i++) cells.push(null)
-  for (let day = 1; day <= total; day++) cells.push({ year, month, day })
-  while (cells.length % 7 !== 0) cells.push(null)
-
-  const weeks: (CalDate | null)[][] = []
-  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
-  return weeks
+  return [...Array(WEEKS)].map((_, week) =>
+    [...Array(7)].map((_, weekday) => dateAt(year, month, week * 7 + weekday - leading)),
+  )
 }

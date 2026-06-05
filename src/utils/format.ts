@@ -1,3 +1,5 @@
+import type { CalDate, YearMonth } from './calendar'
+
 const pad2 = (value: number) => `${value}`.padStart(2, '0')
 
 const WEEKDAYS = ['月', '火', '水', '木', '金', '土', '日']
@@ -25,4 +27,12 @@ export type ClockParts = {
 
 export const formatClock = ({ year, month, day, hour, minute, second }: ClockParts) => {
   return `${year}.${pad2(month)}.${pad2(day)} ${pad2(hour)}:${pad2(minute)}:${pad2(second)}`
+}
+
+export const formatYearMonth = ({ year, month }: YearMonth) => {
+  return `${year}年${month}月`
+}
+
+export const formatYearMonthDay = ({ year, month, day }: CalDate) => {
+  return `${year}年${month}月${day}日`
 }

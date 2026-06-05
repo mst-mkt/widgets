@@ -10,6 +10,7 @@ import { initBrightness } from './services/brightness'
 import { initClock } from './services/clock'
 import { initNotifications } from './services/notifications'
 import { initWorkspaces } from './services/workspaces'
+import { initCalendar } from './stores/calendar'
 import { initLauncher } from './stores/launcher'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
@@ -31,6 +32,7 @@ const serviceInits = [
   initPanel,
   initOsd,
   initLauncher,
+  initCalendar,
 ]
 
 const overlayWidgets = [

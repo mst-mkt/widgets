@@ -23,6 +23,8 @@ export type IconName =
   | 'corner-down-left'
   | 'arrow-up'
   | 'arrow-down'
+  | 'chevron-left'
+  | 'chevron-right'
 
 const sizeStyle = (size: number) => {
   return `font-size: ${size}px;`

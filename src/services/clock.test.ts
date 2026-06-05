@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { resetTime, timers } from '../../test/mocks/ags-time'
-import { initClock, setTime, time, today } from './clock'
+import { currentDay, initClock, setTime, time, today } from './clock'
 
 vi.mock('ags', () => import('../../test/mocks/ags'))
 
@@ -19,6 +19,7 @@ describe('initClock', () => {
 
     expect(time.peek()).toEqual({ year: 2026, month: 6, day: 1, hour: 12, minute: 0, second: 0 })
     expect(today.peek()).toBe('6月1日 (火)')
+    expect(currentDay.peek()).toEqual({ year: 2026, month: 6, day: 1 })
     expect(timers).toHaveLength(1)
   })
 

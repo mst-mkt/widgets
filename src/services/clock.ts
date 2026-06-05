@@ -2,6 +2,7 @@ import { createState } from 'ags'
 import { timeout } from 'ags/time'
 import GLib from 'gi://GLib'
 
+import { isSameDay, type CalDate } from '../utils/calendar'
 import { formatDate, type ClockParts } from '../utils/format'
 
 const now = () => GLib.DateTime.new_now_local()
@@ -14,6 +15,12 @@ const dateOf = (dt: GLib.DateTime) => {
   })
 }
 
+const dayOf = (dt: GLib.DateTime): CalDate => ({
+  year: dt.get_year(),
+  month: dt.get_month(),
+  day: dt.get_day_of_month(),
+})
+
 const partsOf = (dt: GLib.DateTime): ClockParts => ({
   year: dt.get_year(),
   month: dt.get_month(),
@@ -25,6 +32,7 @@ const partsOf = (dt: GLib.DateTime): ClockParts => ({
 
 export const [today, setToday] = createState(dateOf(now()))
 export const [time, setTime] = createState(partsOf(now()))
+export const [currentDay, setCurrentDay] = createState(dayOf(now()))
 
 export const initClock = () => {
   const tick = () => {
@@ -33,6 +41,9 @@ export const initClock = () => {
 
     const date = dateOf(current)
     if (date !== today.peek()) setToday(date)
+
+    const day = dayOf(current)
+    if (!isSameDay(day, currentDay.peek())) setCurrentDay(day)
 
     timeout(1000, tick)
   }
