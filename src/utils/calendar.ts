@@ -13,6 +13,8 @@ export const weekdayOf = ({ year, month, day }: CalDate) => {
   return new Date(Date.UTC(year, month - 1, day)).getUTCDay()
 }
 
+export const isoWeekdayOf = (date: CalDate) => ((weekdayOf(date) + 6) % 7) + 1
+
 export const isSameDay = (a: CalDate, b: CalDate) => {
   return a.year === b.year && a.month === b.month && a.day === b.day
 }
@@ -20,6 +22,8 @@ export const isSameDay = (a: CalDate, b: CalDate) => {
 export const isSameMonth = (date: CalDate, { year, month }: YearMonth) => {
   return date.year === year && date.month === month
 }
+
+export const dayKey = ({ year, month, day }: CalDate) => `${year}-${month}-${day}`
 
 export const addMonths = ({ year, month }: YearMonth, delta: number): YearMonth => {
   const total = year * 12 + (month - 1) + delta

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vite-plus/test'
 
-import { formatClock, formatDate, formatYearMonth, formatYearMonthDay } from './format'
+import {
+  formatClock,
+  formatDate,
+  formatEventTime,
+  formatMonthDayWeekday,
+  formatYearMonth,
+} from './format'
 
 describe('formatDate', () => {
   it('formats month, day and the Japanese weekday', () => {
@@ -26,8 +32,19 @@ describe('formatYearMonth', () => {
   })
 })
 
-describe('formatYearMonthDay', () => {
-  it('formats year, month and day', () => {
-    expect(formatYearMonthDay({ year: 2026, month: 6, day: 5 })).toBe('2026年6月5日')
+describe('formatMonthDayWeekday', () => {
+  it('formats month, day and the derived Japanese weekday', () => {
+    expect(formatMonthDayWeekday({ year: 2026, month: 6, day: 5 })).toBe('6月5日 (金)')
+    expect(formatMonthDayWeekday({ year: 2026, month: 6, day: 7 })).toBe('6月7日 (日)')
+  })
+})
+
+describe('formatEventTime', () => {
+  it('shows the start time for a timed event', () => {
+    expect(formatEventTime({ allDay: false, start: '2026-06-05T09:30:00+09:00' })).toBe('09:30')
+  })
+
+  it('labels an all-day event', () => {
+    expect(formatEventTime({ allDay: true, start: '2026-06-05' })).toBe('終日')
   })
 })

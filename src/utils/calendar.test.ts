@@ -1,11 +1,27 @@
 import { describe, expect, it } from 'vite-plus/test'
 
-import { addMonths, isSameDay, isSameMonth, monthMatrix, weekdayOf } from './calendar'
+import {
+  addMonths,
+  dayKey,
+  isSameDay,
+  isSameMonth,
+  isoWeekdayOf,
+  monthMatrix,
+  weekdayOf,
+} from './calendar'
 
 describe('weekdayOf', () => {
   it('returns the 0=Sunday weekday', () => {
     expect(weekdayOf({ year: 2026, month: 6, day: 5 })).toBe(5)
     expect(weekdayOf({ year: 2026, month: 6, day: 7 })).toBe(0)
+  })
+})
+
+describe('isoWeekdayOf', () => {
+  it('maps to ISO weekday (Mon=1..Sun=7)', () => {
+    expect(isoWeekdayOf({ year: 2026, month: 6, day: 1 })).toBe(1)
+    expect(isoWeekdayOf({ year: 2026, month: 6, day: 5 })).toBe(5)
+    expect(isoWeekdayOf({ year: 2026, month: 6, day: 7 })).toBe(7)
   })
 })
 
@@ -15,6 +31,12 @@ describe('isSameDay', () => {
     expect(isSameDay({ year: 2026, month: 6, day: 5 }, { year: 2026, month: 6, day: 6 })).toBe(
       false,
     )
+  })
+})
+
+describe('dayKey', () => {
+  it('builds a year-month-day key', () => {
+    expect(dayKey({ year: 2026, month: 6, day: 5 })).toBe('2026-6-5')
   })
 })
 

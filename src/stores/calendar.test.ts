@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
+import { setEvents, setEventsStatus } from '../services/calendar'
 import {
+  eventDays,
+  eventsView,
   goToday,
   nextMonth,
   prevMonth,
@@ -56,5 +59,49 @@ describe('calendar store', () => {
     goToday()
     expect(viewMonth.peek()).toEqual({ year: 2026, month: 6 })
     expect(selectedDate.peek()).toEqual({ year: 2026, month: 6, day: 1 })
+  })
+
+  it('derives a list / empty / error events view for the selected day', () => {
+    setEventsStatus('ready')
+    setEvents([
+      {
+        summary: 'a',
+        start: '2026-06-05T09:00:00Z',
+        end: '',
+        allDay: false,
+        day: { year: 2026, month: 6, day: 5 },
+      },
+      {
+        summary: 'b',
+        start: '2026-06-06T09:00:00Z',
+        end: '',
+        allDay: false,
+        day: { year: 2026, month: 6, day: 6 },
+      },
+    ])
+
+    setSelectedDate({ year: 2026, month: 6, day: 5 })
+    const view = eventsView.peek()
+    expect(view.kind === 'list' ? view.events.map((e) => e.summary) : []).toEqual(['a'])
+
+    setSelectedDate({ year: 2026, month: 6, day: 20 })
+    expect(eventsView.peek().kind).toBe('empty')
+
+    setEventsStatus('error')
+    expect(eventsView.peek().kind).toBe('error')
+  })
+
+  it('exposes the set of days that have events', () => {
+    setEvents([
+      {
+        summary: 'a',
+        start: '2026-06-05T09:00:00Z',
+        end: '',
+        allDay: false,
+        day: { year: 2026, month: 6, day: 5 },
+      },
+    ])
+    expect(eventDays.peek().has('2026-6-5')).toBe(true)
+    expect(eventDays.peek().has('2026-6-6')).toBe(false)
   })
 })

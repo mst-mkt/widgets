@@ -1,6 +1,6 @@
-import type { CalDate, YearMonth } from './calendar'
+import { isoWeekdayOf, type CalDate, type YearMonth } from './calendar'
 
-const pad2 = (value: number) => `${value}`.padStart(2, '0')
+export const pad2 = (value: number) => `${value}`.padStart(2, '0')
 
 const WEEKDAYS = ['月', '火', '水', '木', '金', '土', '日']
 
@@ -33,6 +33,15 @@ export const formatYearMonth = ({ year, month }: YearMonth) => {
   return `${year}年${month}月`
 }
 
-export const formatYearMonthDay = ({ year, month, day }: CalDate) => {
-  return `${year}年${month}月${day}日`
+export const formatMonthDayWeekday = (date: CalDate) => {
+  return formatDate({ month: date.month, day: date.day, weekday: isoWeekdayOf(date) })
+}
+
+type EventTimeParts = {
+  allDay: boolean
+  start: string
+}
+
+export const formatEventTime = ({ allDay, start }: EventTimeParts) => {
+  return allDay ? '終日' : start.slice(11, 16)
 }

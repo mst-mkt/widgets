@@ -25,6 +25,8 @@ export type IconName =
   | 'arrow-down'
   | 'chevron-left'
   | 'chevron-right'
+  | 'calendar'
+  | 'cloud-off'
 
 const sizeStyle = (size: number) => {
   return `font-size: ${size}px;`

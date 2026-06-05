@@ -1,6 +1,7 @@
 import { Astal, Gdk, Gtk } from 'ags/gtk4'
 import app from 'ags/gtk4/app'
 
+import { CalendarEvents } from '../components/calendar/events'
 import { CalendarGrid } from '../components/calendar/grid'
 import { CalendarHeader } from '../components/calendar/header'
 import { Panel } from '../components/shared/panel'
@@ -40,6 +41,7 @@ export const CalendarWidget = (gdkmonitor?: Gdk.Monitor) => {
           <box orientation={Gtk.Orientation.VERTICAL} class="p-4">
             <CalendarHeader />
             <CalendarGrid />
+            <CalendarEvents />
           </box>
         </Panel>
       </PanelOverlay>
