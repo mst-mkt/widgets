@@ -1,5 +1,19 @@
 const pad2 = (value: number) => `${value}`.padStart(2, '0')
 
+const WEEKDAYS = ['月', '火', '水', '木', '金', '土', '日']
+
+const weekdayLabel = (weekday: number) => WEEKDAYS[weekday - 1] ?? ''
+
+type DateParts = {
+  month: number
+  day: number
+  weekday: number
+}
+
+export const formatDate = ({ month, day, weekday }: DateParts) => {
+  return `${month}月${day}日 (${weekdayLabel(weekday)})`
+}
+
 export type ClockParts = {
   year: number
   month: number

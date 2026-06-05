@@ -2,23 +2,7 @@ import { createState } from 'ags'
 import { timeout } from 'ags/time'
 import GLib from 'gi://GLib'
 
-import type { ClockParts } from '../utils/format'
-
-const WEEKDAYS = ['月', '火', '水', '木', '金', '土', '日']
-
-export const weekdayLabel = (weekday: number) => {
-  return WEEKDAYS[weekday - 1] ?? ''
-}
-
-type DateParts = {
-  month: number
-  day: number
-  weekday: number
-}
-
-export const formatDate = ({ month, day, weekday }: DateParts) => {
-  return `${month}月${day}日 (${weekdayLabel(weekday)})`
-}
+import { formatDate, type ClockParts } from '../utils/format'
 
 const now = () => GLib.DateTime.new_now_local()
 
