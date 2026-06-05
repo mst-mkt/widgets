@@ -60,9 +60,8 @@ const DayCell = (date: CalDate, view: YearMonth) => {
           class={createComputed(() =>
             unoMerge(
               'text-13 text-dim',
-              weekday === 6 && 'text-saturday',
-              weekday === 0 && 'text-holiday',
-              holidayDays().has(key) && 'text-holiday',
+              weekday % 6 === 0 && 'text-weekend',
+              holidayDays().has(key) && 'text-weekend',
               outside && 'text-ghost',
               state() === 'today' && 'text-gold',
               state() === 'selected' && 'text-coal font-semibold',
@@ -97,8 +96,7 @@ export const CalendarGrid: FC = () => (
         <label
           class={unoMerge(
             'text-11',
-            index === 0 && 'text-holiday',
-            index === 6 && 'text-saturday',
+            index % 6 === 0 && 'text-weekend',
             index % 6 !== 0 && 'text-faint',
           )}
           label={weekday}
