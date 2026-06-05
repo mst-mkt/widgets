@@ -2,12 +2,20 @@ import { createComputed, With } from 'ags'
 import { Gtk } from 'ags/gtk4'
 import { unoMerge } from 'unocss-merge'
 
-import { eventDays, selectDay, selectedDate, todayDate, viewMonth } from '../../stores/calendar'
+import {
+  eventDays,
+  holidayDays,
+  selectDay,
+  selectedDate,
+  todayDate,
+  viewMonth,
+} from '../../stores/calendar'
 import {
   dayKey,
   isSameDay,
   isSameMonth,
   monthMatrix,
+  weekdayOf,
   type CalDate,
   type YearMonth,
 } from '../../utils/calendar'
@@ -29,6 +37,9 @@ const DayCell = (date: CalDate, view: YearMonth) => {
 
   const showDot = createComputed(() => state() !== 'selected' && eventDays().has(dayKey(date)))
 
+  const weekday = weekdayOf(date)
+  const key = dayKey(date)
+
   const cell = (
     <overlay>
       <box
@@ -46,12 +57,15 @@ const DayCell = (date: CalDate, view: YearMonth) => {
           halign={Gtk.Align.CENTER}
           valign={Gtk.Align.CENTER}
           hexpand
-          class={state.as((s) =>
+          class={createComputed(() =>
             unoMerge(
-              'text-13',
-              s === 'selected' && 'text-coal font-semibold',
-              s === 'today' && 'text-gold',
-              s === 'normal' && (outside ? 'text-ghost' : 'text-dim'),
+              'text-13 text-dim',
+              weekday === 6 && 'text-saturday',
+              weekday === 0 && 'text-holiday',
+              holidayDays().has(key) && 'text-holiday',
+              outside && 'text-ghost',
+              state() === 'today' && 'text-gold',
+              state() === 'selected' && 'text-coal font-semibold',
             ),
           )}
           label={`${date.day}`}

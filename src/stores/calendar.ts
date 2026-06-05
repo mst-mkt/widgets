@@ -8,6 +8,7 @@ import {
   type CalendarEvent,
 } from '../services/calendar'
 import { currentDay } from '../services/clock'
+import { holidayKeys } from '../services/holidays'
 import { addMonths, dayKey, type CalDate, type YearMonth } from '../utils/calendar'
 import { isPanelOpen } from './panel'
 
@@ -23,6 +24,8 @@ export const [selectedDate, setSelectedDate] = createState<CalDate>(initial)
 export const todayDate = currentDay
 
 export const eventDays = events.as((list) => new Set(list.map((event) => dayKey(event.day))))
+
+export const holidayDays = viewMonth.as(holidayKeys)
 
 export type EventsView =
   | { kind: 'error' }
