@@ -9,6 +9,7 @@ export const resetGLib = () => {
 }
 
 const dateTime = {
+  get_year: () => 2026,
   get_month: () => 6,
   get_day_of_month: () => 1,
   get_day_of_week: () => 2,

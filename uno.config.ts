@@ -19,6 +19,8 @@ export default defineConfig({
   rules: [
     [/^shadow-none$/, () => ({ 'box-shadow': 'none' })],
     [/^font-icon$/, () => ({ 'font-family': '"lucide"' })],
+    [/^font-mono$/, () => ({ 'font-family': '"UDEV Gothic NF", monospace' })],
+    [/^tracking-\[(.+)\]$/, ([, value = '0']) => ({ 'letter-spacing': value })],
     [
       /^font-(light|normal|medium|semibold|bold)$/,
       ([, weight = 'normal']) => ({

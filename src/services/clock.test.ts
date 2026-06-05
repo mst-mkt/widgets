@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { resetTime, timers } from '../../test/mocks/ags-time'
-import { formatDate, initClock, secondsUntilMidnight, setToday, today, weekdayLabel } from './clock'
+import { formatDate, initClock, setTime, time, today, weekdayLabel } from './clock'
 
 vi.mock('ags', () => import('../../test/mocks/ags'))
 
@@ -34,26 +34,20 @@ describe('formatDate', () => {
   })
 })
 
-describe('secondsUntilMidnight', () => {
-  it('counts the seconds left in the day', () => {
-    expect(secondsUntilMidnight({ hour: 0, minute: 0, second: 0 })).toBe(86400)
-    expect(secondsUntilMidnight({ hour: 23, minute: 59, second: 59 })).toBe(1)
-  })
-})
-
 describe('initClock', () => {
   beforeEach(resetTime)
 
-  it('sets today and schedules a midnight tick', () => {
-    setToday('stale')
+  it('sets today and the current time, then schedules a one-second tick', () => {
+    setTime({ year: 0, month: 0, day: 0, hour: 0, minute: 0, second: 0 })
 
     initClock()
 
+    expect(time.peek()).toEqual({ year: 2026, month: 6, day: 1, hour: 12, minute: 0, second: 0 })
     expect(today.peek()).toBe('6月1日 (火)')
     expect(timers).toHaveLength(1)
   })
 
-  it('reschedules itself for the next midnight when the tick fires', () => {
+  it('reschedules itself every second when the tick fires', () => {
     initClock()
 
     timers[0]?.()
