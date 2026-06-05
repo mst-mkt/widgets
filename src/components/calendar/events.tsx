@@ -59,9 +59,9 @@ export const CalendarEvents: FC = () => (
       <With value={eventsView}>
         {(view: EventsView) =>
           view.kind === 'error' ? (
-            <EventsPlaceholder icon="cloud-off" label="予定を取得できませんでした" />
+            <EventsPlaceholder icon="cloud-off" label="Couldn't Load Events" />
           ) : view.kind === 'empty' ? (
-            <EventsPlaceholder icon="calendar" label="予定はありません" />
+            <EventsPlaceholder icon="calendar" label="No Events" />
           ) : (
             <box orientation={Gtk.Orientation.VERTICAL}>{view.events.map(EventRow)}</box>
           )
