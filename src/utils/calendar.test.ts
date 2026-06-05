@@ -59,14 +59,22 @@ describe('addMonths', () => {
 })
 
 describe('monthMatrix', () => {
-  it('always returns six weeks of seven days', () => {
-    const weeks = monthMatrix(2026, 6)
-
-    expect(weeks).toHaveLength(6)
-    expect(weeks.every((week) => week.length === 7)).toBe(true)
+  it('keeps a constant six-week height', () => {
+    expect(monthMatrix(2026, 6)).toHaveLength(6)
+    expect(monthMatrix(2026, 2)).toHaveLength(6)
+    expect(monthMatrix(2026, 11)).toHaveLength(6)
+    expect(monthMatrix(2026, 6).every((week) => week.length === 7)).toBe(true)
   })
 
-  it('fills the edges with adjacent-month days', () => {
+  it('adds a leading previous-month week only for Sunday-starting months', () => {
+    const weeks = monthMatrix(2026, 11)
+
+    expect(weeks[0]?.[0]).toEqual({ year: 2026, month: 10, day: 25 })
+    expect(weeks[1]?.[0]).toEqual({ year: 2026, month: 11, day: 1 })
+    expect(weeks.at(-1)?.some((day) => day.month === 12)).toBe(true)
+  })
+
+  it('leaves non-Sunday months unshifted', () => {
     const weeks = monthMatrix(2026, 6)
 
     expect(weeks[0]?.[0]).toEqual({ year: 2026, month: 5, day: 31 })

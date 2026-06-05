@@ -39,8 +39,9 @@ const dateAt = (year: number, month: number, offset: number): CalDate => {
 
 export const monthMatrix = (year: number, month: number): CalDate[][] => {
   const leading = weekdayOf({ year, month, day: 1 })
+  const offset = leading === 0 ? 7 : leading
 
   return [...Array(WEEKS)].map((_, week) =>
-    [...Array(7)].map((_, weekday) => dateAt(year, month, week * 7 + weekday - leading)),
+    [...Array(7)].map((_, weekday) => dateAt(year, month, week * 7 + weekday - offset)),
   )
 }
