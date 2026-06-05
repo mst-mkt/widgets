@@ -31,10 +31,7 @@ export default defineConfig({
       }),
     ],
     [/^text-(\d+)$/, ([, size = '0']) => ({ 'font-size': `${size}px` })],
-    [
-      /^transition(?:-(\d+))?$/,
-      ([, ms = '150']) => ({ transition: `min-width ${ms}ms ease, background-color ${ms}ms ease` }),
-    ],
+    [/^transition$/, () => ({ transition: 'background-color 150ms ease' })],
   ],
   preflights: [
     {
