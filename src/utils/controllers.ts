@@ -28,6 +28,26 @@ export const onHover = (handler: () => void) => (self: Gtk.Widget) => {
   self.add_controller(motion)
 }
 
+export const onMove = (handler: (x: number, y: number) => void) => (self: Gtk.Widget) => {
+  const motion = new Gtk.EventControllerMotion()
+  let lastX = Number.NaN
+  let lastY = Number.NaN
+
+  motion.connect('motion', (_controller: unknown, x: number, y: number) => {
+    const root = self.get_root()
+    const rooted = root != null ? self.translate_coordinates(root, x, y) : null
+    const px = rooted?.[0] === true ? (rooted[1] as number) : x
+    const py = rooted?.[0] === true ? (rooted[2] as number) : y
+
+    const moved = Math.abs(px - lastX) >= 1 || Math.abs(py - lastY) >= 1
+    lastX = px
+    lastY = py
+    if (moved) handler(x, y)
+  })
+
+  self.add_controller(motion)
+}
+
 export const onEscape = (handler: () => void) => (self: Gtk.Widget) => {
   const key = new Gtk.EventControllerKey()
   key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)

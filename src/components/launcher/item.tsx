@@ -4,7 +4,7 @@ import Pango from 'gi://Pango'
 
 import type { AppEntry } from '../../services/launcher'
 import { mergeClass } from '../../utils/class'
-import { compose, onHover, onReleased, pointer } from '../../utils/controllers'
+import { compose, onReleased, pointer } from '../../utils/controllers'
 import type { FC } from '../../utils/types'
 import { AppIcon } from '../notification-panel/app-icon'
 import { Icon } from '../shared/icon'
@@ -15,10 +15,9 @@ type LauncherItemProps = {
   entry: AppEntry
   active: Accessor<boolean>
   onActivate: () => void
-  onSelect: () => void
 }
 
-export const LauncherItem: FC<LauncherItemProps> = ({ entry, active, onActivate, onSelect }) => (
+export const LauncherItem: FC<LauncherItemProps> = ({ entry, active, onActivate }) => (
   <box
     class={mergeClass(
       'mx-2 rounded-8 px-3 transition',
@@ -27,7 +26,7 @@ export const LauncherItem: FC<LauncherItemProps> = ({ entry, active, onActivate,
     heightRequest={ITEM_HEIGHT}
     spacing={12}
     valign={Gtk.Align.CENTER}
-    $={compose(pointer, onHover(onSelect), onReleased(onActivate))}
+    $={compose(pointer, onReleased(onActivate))}
   >
     <box class="rounded-6" overflow={Gtk.Overflow.HIDDEN} valign={Gtk.Align.CENTER}>
       <AppIcon icon={entry.icon} size={30} />

@@ -3,11 +3,19 @@ import { Gtk } from 'ags/gtk4'
 
 import type { AppEntry } from '../../services/launcher'
 import { launchApp, results, selectIndex, selected } from '../../stores/launcher'
+import { onMove } from '../../utils/controllers'
+import { clamp } from '../../utils/math'
 import type { FC } from '../../utils/types'
 import { ITEM_HEIGHT, LauncherItem } from './item'
 
 const LIST_PADDING = 8
 export const LIST_HEIGHT = 6 * ITEM_HEIGHT + 2 * LIST_PADDING
+
+const selectAt = (_x: number, y: number) => {
+  const count = results.peek().length
+  if (count === 0) return
+  selectIndex(clamp(Math.floor(y / ITEM_HEIGHT), 0, count - 1))
+}
 
 const scrollToSelected = (self: Gtk.ScrolledWindow) => {
   const adjustment = self.get_vadjustment()
@@ -44,6 +52,7 @@ export const LauncherList: FC = () => (
       orientation={Gtk.Orientation.VERTICAL}
       marginTop={LIST_PADDING}
       marginBottom={LIST_PADDING}
+      $={onMove(selectAt)}
     >
       <For each={results} id={(entry: AppEntry) => entry.entry}>
         {(entry: AppEntry, index: Accessor<number>) => (
@@ -51,7 +60,6 @@ export const LauncherList: FC = () => (
             entry={entry}
             active={createComputed(() => selected() === index())}
             onActivate={() => launchApp(entry.entry)}
-            onSelect={() => selectIndex(index.peek())}
           />
         )}
       </For>

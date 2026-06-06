@@ -71,6 +71,7 @@ export const createWidget = (childFocusable = false): MockWidget => {
     child_focus: vi.fn(() => childFocusable),
     grab_focus: vi.fn(),
     set_cursor_from_name: vi.fn(),
+    get_root: () => null,
   } as unknown as MockWidget
 
   return widget

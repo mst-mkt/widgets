@@ -7,6 +7,7 @@ import {
   onEscape,
   onHover,
   onKeyPress,
+  onMove,
   onPressed,
   onReleased,
   pointer,
@@ -71,6 +72,40 @@ describe('onHover', () => {
     widget.controllers[0]?.emit('enter')
 
     expect(handler).toHaveBeenCalledOnce()
+  })
+})
+
+describe('onMove', () => {
+  it('only establishes a baseline on the first event', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    onMove(handler)(widget)
+
+    widget.controllers[0]?.emit('motion', 10, 20)
+
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('ignores repeated events at the same position', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    onMove(handler)(widget)
+
+    widget.controllers[0]?.emit('motion', 10, 20)
+    widget.controllers[0]?.emit('motion', 10, 20)
+
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('runs the handler with coordinates once the pointer moves', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    onMove(handler)(widget)
+
+    widget.controllers[0]?.emit('motion', 10, 20)
+    widget.controllers[0]?.emit('motion', 10, 50)
+
+    expect(handler).toHaveBeenCalledExactlyOnceWith(10, 50)
   })
 })
 
