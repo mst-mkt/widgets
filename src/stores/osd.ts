@@ -1,6 +1,5 @@
 import { createState } from 'ags'
 import { type Timer, timeout } from 'ags/time'
-import GLib from 'gi://GLib'
 
 import type { IconName } from '../components/shared/icon'
 import { isMuted, volume } from '../services/audio'
@@ -13,8 +12,6 @@ export type OsdContent = {
 }
 
 const HIDE_DELAY = 1000
-const GRACE_PERIOD = 500
-const nowMs = () => GLib.get_monotonic_time() / 1000
 
 export const [visible, setVisible] = createState(false)
 export const [content, setContent] = createState<OsdContent>({ icon: 'volume-2', value: 0 })
@@ -60,20 +57,51 @@ export const brightnessContent = (value: number): OsdContent => ({
 })
 
 export const initOsd = () => {
-  const startedAt = nowMs()
-  const settled = () => nowMs() - startedAt > GRACE_PERIOD
+  let volumeReady = false
+  let lastVolume = volume.peek()
+  let lastMuted = isMuted.peek()
 
-  const showVolume = () => show(volumeContent(volume.peek(), isMuted.peek()))
-  const showBrightness = () => show(brightnessContent(brightness.peek()))
+  const onVolume = () => {
+    const value = volume.peek()
+    const muted = isMuted.peek()
+    if (!volumeReady) {
+      volumeReady = true
+      lastVolume = value
+      lastMuted = muted
+      return
+    }
 
-  volume.subscribe(() => settled() && showVolume())
-  isMuted.subscribe(() => settled() && showVolume())
-  brightness.subscribe(() => settled() && showBrightness())
+    if (value === lastVolume && muted === lastMuted) return
 
-  let last = focused.peek()
+    lastVolume = value
+    lastMuted = muted
+    show(volumeContent(value, muted))
+  }
+  volume.subscribe(onVolume)
+  isMuted.subscribe(onVolume)
+
+  let brightnessReady = false
+  let lastBrightness = brightness.peek()
+
+  brightness.subscribe(() => {
+    const value = brightness.peek()
+    if (!brightnessReady) {
+      brightnessReady = true
+      lastBrightness = value
+      return
+    }
+
+    if (value === lastBrightness) return
+    lastBrightness = value
+    show(brightnessContent(value))
+  })
+
+  let lastFocused = focused.peek()
+
   focused.subscribe(() => {
-    if (focused.peek() === last) return
-    last = focused.peek()
+    if (focused.peek() === lastFocused) return
+
+    lastFocused = focused.peek()
     hide()
   })
 }

@@ -62,8 +62,6 @@ const load = async () => {
   }
 }
 
-const PAST_GRACE_US = 600 * 1000
-
 const focusWorkspace = (idx: number): Workspace[] => [{ id: idx, idx, is_focused: true }]
 
 const { volumeIcon, volumeContent, brightnessContent } = await import('./osd')
@@ -98,20 +96,19 @@ describe('brightnessContent', () => {
 })
 
 describe('initOsd', () => {
-  it('stays hidden for changes within the grace period', async () => {
-    const { time, audio, osd } = await load()
+  it('stays hidden while volume settles to its initial value', async () => {
+    const { audio, osd } = await load()
     osd.initOsd()
 
     audio.setVolume(0.6)
 
     expect(osd.visible.peek()).toBe(false)
-    expect(time.timers).toHaveLength(0)
   })
 
-  it('shows the volume once the grace period has passed', async () => {
-    const { glib, time, audio, osd } = await load()
+  it('shows the volume when it changes', async () => {
+    const { time, audio, osd } = await load()
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
+    audio.setVolume(0.5)
 
     audio.setVolume(0.6)
 
@@ -121,31 +118,39 @@ describe('initOsd', () => {
   })
 
   it('zeroes the bar when the speaker is muted', async () => {
-    const { glib, audio, osd } = await load()
+    const { audio, osd } = await load()
     osd.initOsd()
     audio.setVolume(0.6)
-    glib.clock.us = PAST_GRACE_US
 
     audio.setMuted(true)
 
     expect(osd.content.peek()).toEqual({ icon: 'volume-x', value: 0 })
   })
 
-  it('shows brightness changes with the sun icon', async () => {
-    const { glib, brightness, osd } = await load()
+  it('stays hidden while brightness settles to its initial value', async () => {
+    const { brightness, osd } = await load()
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
 
     brightness.setBrightness(0.3)
 
+    expect(osd.visible.peek()).toBe(false)
+  })
+
+  it('shows brightness changes with the sun icon', async () => {
+    const { brightness, osd } = await load()
+    osd.initOsd()
+    brightness.setBrightness(0.3)
+
+    brightness.setBrightness(0.4)
+
     expect(osd.visible.peek()).toBe(true)
-    expect(osd.content.peek()).toEqual({ icon: 'sun', value: 0.3 })
+    expect(osd.content.peek()).toEqual({ icon: 'sun', value: 0.4 })
   })
 
   it('auto-hides after the hide delay fires', async () => {
-    const { glib, time, audio, osd } = await load()
+    const { time, audio, osd } = await load()
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
+    audio.setVolume(0.5)
     audio.setVolume(0.6)
 
     time.timers[0]?.()
@@ -154,9 +159,9 @@ describe('initOsd', () => {
   })
 
   it('cancels the pending hide timer when re-shown', async () => {
-    const { glib, time, audio, osd } = await load()
+    const { time, audio, osd } = await load()
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
+    audio.setVolume(0.5)
 
     audio.setVolume(0.6)
     audio.setVolume(0.7)
@@ -167,10 +172,10 @@ describe('initOsd', () => {
   })
 
   it('hides and cancels the timer when the focused workspace changes', async () => {
-    const { glib, time, audio, workspaces, osd } = await load()
+    const { time, audio, workspaces, osd } = await load()
     workspaces.setWorkspaces(focusWorkspace(1))
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
+    audio.setVolume(0.5)
     audio.setVolume(0.6)
     expect(osd.visible.peek()).toBe(true)
 
@@ -181,10 +186,10 @@ describe('initOsd', () => {
   })
 
   it('stays visible when focus re-emits the same workspace', async () => {
-    const { glib, audio, workspaces, osd } = await load()
+    const { audio, workspaces, osd } = await load()
     workspaces.setWorkspaces(focusWorkspace(1))
     osd.initOsd()
-    glib.clock.us = PAST_GRACE_US
+    audio.setVolume(0.5)
     audio.setVolume(0.6)
 
     workspaces.setWorkspaces(focusWorkspace(1))
