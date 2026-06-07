@@ -48,6 +48,21 @@ export const createComputed = <T>(producer: () => T) => {
   return accessorFrom(producer, subscribe)
 }
 
+export const cleanups: (() => void)[] = []
+
+export const onCleanup = (cleanup: () => void) => {
+  cleanups.push(cleanup)
+}
+
+export const runCleanups = () => {
+  for (const cleanup of cleanups.splice(0)) {
+    cleanup()
+  }
+}
+
+export const appendChild = Symbol('appendChild')
+export const removeChild = Symbol('removeChild')
+
 export const createBinding = <T, K extends keyof T>(object: T, property: K) => {
   return accessorFrom(
     () => object[property],

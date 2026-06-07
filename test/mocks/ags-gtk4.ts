@@ -18,6 +18,8 @@ class Controller {
 
 export class GestureClick extends Controller {}
 
+export class GestureDrag extends Controller {}
+
 export class EventControllerMotion extends Controller {}
 
 export class EventControllerKey extends Controller {
@@ -26,6 +28,7 @@ export class EventControllerKey extends Controller {
 
 export const Gtk = {
   GestureClick,
+  GestureDrag,
   EventControllerMotion,
   EventControllerKey,
   PropagationPhase: { CAPTURE: 3 },
@@ -75,4 +78,17 @@ export const createWidget = (childFocusable = false): MockWidget => {
   } as unknown as MockWidget
 
   return widget
+}
+
+export const createOverlay = () => {
+  let child: GtkTypes.Widget | null = null
+
+  return {
+    add_overlay: vi.fn((_widget: GtkTypes.Widget) => {}),
+    remove_overlay: vi.fn((_widget: GtkTypes.Widget) => {}),
+    set_child: vi.fn((next: GtkTypes.Widget | null) => {
+      child = next
+    }),
+    get_child: (): GtkTypes.Widget | null => child,
+  }
 }

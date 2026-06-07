@@ -4,12 +4,14 @@ import { createWidget, Gdk } from '../../test/mocks/ags-gtk4'
 import {
   autofocus,
   compose,
+  hoverState,
   onEscape,
   onHover,
   onKeyPress,
   onMove,
   onPressed,
   onReleased,
+  onSwipe,
   pointer,
 } from './controllers'
 
@@ -72,6 +74,35 @@ describe('onHover', () => {
     widget.controllers[0]?.emit('enter')
 
     expect(handler).toHaveBeenCalledOnce()
+  })
+})
+
+describe('hoverState', () => {
+  it('reports true on enter and false on leave', () => {
+    const handler = vi.fn()
+    const widget = createWidget()
+    hoverState(handler)(widget)
+
+    widget.controllers[0]?.emit('enter')
+    expect(handler).toHaveBeenLastCalledWith(true)
+
+    widget.controllers[0]?.emit('leave')
+    expect(handler).toHaveBeenLastCalledWith(false)
+  })
+})
+
+describe('onSwipe', () => {
+  it('forwards the drag offset while moving and the final offset on release', () => {
+    const move = vi.fn()
+    const end = vi.fn()
+    const widget = createWidget()
+    onSwipe({ move, end })(widget)
+
+    widget.controllers[0]?.emit('drag-update', 30)
+    expect(move).toHaveBeenCalledWith(30)
+
+    widget.controllers[0]?.emit('drag-end', 120)
+    expect(end).toHaveBeenCalledWith(120)
   })
 })
 

@@ -14,10 +14,12 @@ import { initCalendar } from './stores/calendar'
 import { initLauncher } from './stores/launcher'
 import { initOsd } from './stores/osd'
 import { initPanel } from './stores/panel'
+import { initToast } from './stores/toast'
 import { BarWidget } from './widgets/bar'
 import { CalendarWidget } from './widgets/calendar'
 import { LauncherWidget } from './widgets/launcher'
 import { NotificationPanelWidget } from './widgets/notification-panel'
+import { NotificationToastWidget } from './widgets/notification-toast'
 import { OsdWidget } from './widgets/osd'
 import { PlayerWidget } from './widgets/player'
 
@@ -33,6 +35,7 @@ const serviceInits = [
   initOsd,
   initLauncher,
   initCalendar,
+  initToast,
 ]
 
 const overlayWidgets = [
@@ -41,6 +44,7 @@ const overlayWidgets = [
   OsdWidget,
   LauncherWidget,
   CalendarWidget,
+  NotificationToastWidget,
 ]
 
 app.start({
