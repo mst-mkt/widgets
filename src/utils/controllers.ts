@@ -28,6 +28,13 @@ export const onHover = (handler: () => void) => (self: Gtk.Widget) => {
   self.add_controller(motion)
 }
 
+export const hoverState = (handler: (hovered: boolean) => void) => (self: Gtk.Widget) => {
+  const motion = new Gtk.EventControllerMotion()
+  motion.connect('enter', () => handler(true))
+  motion.connect('leave', () => handler(false))
+  self.add_controller(motion)
+}
+
 export const onMove = (handler: (x: number, y: number) => void) => (self: Gtk.Widget) => {
   const motion = new Gtk.EventControllerMotion()
   let lastX = Number.NaN
@@ -47,6 +54,14 @@ export const onMove = (handler: (x: number, y: number) => void) => (self: Gtk.Wi
 
   self.add_controller(motion)
 }
+
+export const onSwipe =
+  (handlers: { move: (dx: number) => void; end: (dx: number) => void }) => (self: Gtk.Widget) => {
+    const drag = new Gtk.GestureDrag()
+    drag.connect('drag-update', (_controller: unknown, dx: number) => handlers.move(dx))
+    drag.connect('drag-end', (_controller: unknown, dx: number) => handlers.end(dx))
+    self.add_controller(drag)
+  }
 
 export const onEscape = (handler: () => void) => (self: Gtk.Widget) => {
   const key = new Gtk.EventControllerKey()

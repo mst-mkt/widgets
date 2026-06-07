@@ -1,4 +1,4 @@
-import { createState, type Accessor } from 'ags'
+import { createState, onCleanup, type Accessor } from 'ags'
 import GLib from 'gi://GLib'
 
 import { easeOutCubic, lerp } from './math'
@@ -21,15 +21,17 @@ export const tweened = (
   let to = from
   let startedAt = 0
   let isRunning = false
+  let disposed = false
 
   const tick = () => {
+    if (disposed) return GLib.SOURCE_REMOVE
     const progress = Math.min((nowMs() - startedAt) / duration, 1)
     setValue(lerp(from, to, easing(progress)))
     isRunning = progress < 1
     return isRunning ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE
   }
 
-  source.subscribe(() => {
+  const unsubscribe = source.subscribe(() => {
     const next = source.peek()
     if (next === to) return
 
@@ -40,6 +42,12 @@ export const tweened = (
     if (isRunning) return
     isRunning = true
     GLib.timeout_add(GLib.PRIORITY_DEFAULT, FRAME_MS, tick)
+  })
+
+  onCleanup(() => {
+    disposed = true
+    isRunning = false
+    unsubscribe()
   })
 
   return value

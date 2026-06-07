@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
+import { cleanups, runCleanups } from '../../test/mocks/ags'
 import { clock, resetGLib, timers } from '../../test/mocks/gi-glib'
 
 vi.mock('gi://GLib', () => import('../../test/mocks/gi-glib'))
@@ -21,6 +22,7 @@ const runTimer = () => {
 describe('tweened', () => {
   beforeEach(() => {
     resetGLib()
+    cleanups.length = 0
   })
 
   it('starts at the source value and schedules nothing until it changes', () => {
@@ -78,5 +80,26 @@ describe('tweened', () => {
     runTimer()
 
     expect(value.peek()).toBeCloseTo(0.25)
+  })
+
+  it('unsubscribes from its source when its scope is disposed', () => {
+    const [source, setSource] = createState(0)
+    tweened(source, { duration: 1000, easing: (t) => t })
+
+    runCleanups()
+    setSource(1)
+
+    expect(timers).toHaveLength(0)
+  })
+
+  it('stops its running frame loop after disposal', () => {
+    const [source, setSource] = createState(0)
+    tweened(source, { duration: 1000, easing: (t) => t })
+    setSource(1)
+    expect(timers).toHaveLength(1)
+
+    runCleanups()
+
+    expect(runTimer()).toBe(false)
   })
 })
